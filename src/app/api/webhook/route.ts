@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import MercadoPago from "mercadopago";
+import { MercadoPagoConfig, Payment } from "mercadopago";
 import { approvePayment } from "@/lib/storage";
 
-const client = new MercadoPago.MercadoPagoConfig({
+const client = new MercadoPagoConfig({
   accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN!,
 });
 
@@ -10,15 +10,13 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // Mercado Pago envia notificações de vários tipos
     if (body.type !== "payment") {
       return NextResponse.json({ ok: true });
     }
 
     const paymentId = String(body.data?.id);
 
-    // Consulta o status real do pagamento
-    const paymentAPI = new MercadoPago.Payment(client);
+    const paymentAPI = new Payment(client);
     const result = await paymentAPI.get({ id: paymentId });
 
     if (result.status === "approved") {
