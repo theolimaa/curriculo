@@ -20,8 +20,9 @@ export interface FormData {
   experiencias: Experiencia[];
   formacao: Formacao[];
   habilidades: string;
+  foto?: string; // base64
 }
 
 export interface CVData extends FormData {
-  paymentId?: string;
+  sessionId?: string;
 }
