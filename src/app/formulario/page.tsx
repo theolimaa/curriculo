@@ -65,7 +65,9 @@ export default function Formulario() {
       const res = await fetch("/api/generate-cv", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ paymentId }) });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      setCvData(data.cvData); setStep("edit");
+      // Preserva a foto que foi enviada no formulário
+      setCvData({ ...data.cvData, foto: formData.foto });
+      setStep("edit");
     } catch { setError("Erro ao gerar currículo. Entre em contato."); setStep("payment"); }
   };
 
@@ -140,10 +142,48 @@ export default function Formulario() {
             <p style={{ color: "#888", fontSize: "15px", margin: "0 0 36px" }}>Preencha abaixo — nosso método monta tudo para você.</p>
 
             <SectionLabel>Informações Pessoais</SectionLabel>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
-              <Field label="Nome completo *" value={formData.nome} onChange={(v) => setFormData({ ...formData, nome: v })} placeholder="Ex: Maria Silva" />
-              <Field label="WhatsApp / Telefone *" value={formData.telefone} onChange={(v) => setFormData({ ...formData, telefone: v })} placeholder="(11) 99999-9999" />
+
+            {/* FOTO + CAMPOS */}
+            <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", marginBottom: "12px" }}>
+              {/* Upload de foto */}
+              <div style={{ flexShrink: 0 }}>
+                <p style={{ fontSize: "12px", fontWeight: 800, color: "#555", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "1px" }}>Foto (opcional)</p>
+                <label style={{ cursor: "pointer", display: "block" }}>
+                  <div style={{ width: "80px", height: "80px", borderRadius: "50%", border: `2px dashed ${formData.foto ? RED : "#ccc"}`, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: formData.foto ? "transparent" : "#fafafa", transition: "border-color 0.2s" }}>
+                    {formData.foto ? (
+                      <img src={formData.foto} alt="Foto" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    ) : (
+                      <div style={{ textAlign: "center" }}>
+                        <div style={{ fontSize: "20px", marginBottom: "2px" }}>📷</div>
+                        <div style={{ fontSize: "9px", color: "#aaa", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>Enviar</div>
+                      </div>
+                    )}
+                  </div>
+                  <input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                      setFormData({ ...formData, foto: ev.target?.result as string });
+                    };
+                    reader.readAsDataURL(file);
+                  }} />
+                </label>
+                {formData.foto && (
+                  <button onClick={() => setFormData({ ...formData, foto: undefined })}
+                    style={{ marginTop: "6px", width: "80px", background: "transparent", border: "none", color: "#aaa", fontSize: "11px", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, textTransform: "uppercase" }}>
+                    Remover
+                  </button>
+                )}
+              </div>
+
+              {/* Campos nome/telefone */}
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "12px" }}>
+                <Field label="Nome completo *" value={formData.nome} onChange={(v) => setFormData({ ...formData, nome: v })} placeholder="Ex: Maria Silva" />
+                <Field label="WhatsApp / Telefone *" value={formData.telefone} onChange={(v) => setFormData({ ...formData, telefone: v })} placeholder="(11) 99999-9999" />
+              </div>
             </div>
+
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
               <Field label="E-mail" value={formData.email} onChange={(v) => setFormData({ ...formData, email: v })} placeholder="email@gmail.com" />
               <Field label="Cidade / Estado" value={formData.cidade} onChange={(v) => setFormData({ ...formData, cidade: v })} placeholder="São Paulo - SP" />
@@ -264,9 +304,44 @@ export default function Formulario() {
             </div>
 
             <SectionLabel>Dados Pessoais</SectionLabel>
+
+            {/* Foto na edição */}
+            <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", marginBottom: "12px" }}>
+              <div style={{ flexShrink: 0 }}>
+                <p style={{ fontSize: "12px", fontWeight: 800, color: "#555", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "1px" }}>Foto</p>
+                <label style={{ cursor: "pointer", display: "block" }}>
+                  <div style={{ width: "72px", height: "72px", borderRadius: "50%", border: `2px dashed ${cvData.foto ? RED : "#ccc"}`, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: cvData.foto ? "transparent" : "#fafafa" }}>
+                    {cvData.foto ? (
+                      <img src={cvData.foto} alt="Foto" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    ) : (
+                      <div style={{ textAlign: "center" }}>
+                        <div style={{ fontSize: "18px" }}>📷</div>
+                        <div style={{ fontSize: "8px", color: "#aaa", fontWeight: 700, textTransform: "uppercase" }}>Enviar</div>
+                      </div>
+                    )}
+                  </div>
+                  <input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => setCvData({ ...cvData, foto: ev.target?.result as string });
+                    reader.readAsDataURL(file);
+                  }} />
+                </label>
+                {cvData.foto && (
+                  <button onClick={() => setCvData({ ...cvData, foto: undefined })}
+                    style={{ marginTop: "4px", width: "72px", background: "transparent", border: "none", color: "#aaa", fontSize: "10px", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, textTransform: "uppercase" }}>
+                    Remover
+                  </button>
+                )}
+              </div>
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "12px" }}>
+                <Field label="Nome" value={cvData.nome} onChange={(v) => setCvData({ ...cvData, nome: v })} />
+                <Field label="Telefone" value={cvData.telefone} onChange={(v) => setCvData({ ...cvData, telefone: v })} />
+              </div>
+            </div>
+
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
-              <Field label="Nome" value={cvData.nome} onChange={(v) => setCvData({ ...cvData, nome: v })} />
-              <Field label="Telefone" value={cvData.telefone} onChange={(v) => setCvData({ ...cvData, telefone: v })} />
               <Field label="E-mail" value={cvData.email} onChange={(v) => setCvData({ ...cvData, email: v })} />
               <Field label="Cidade" value={cvData.cidade} onChange={(v) => setCvData({ ...cvData, cidade: v })} />
             </div>
