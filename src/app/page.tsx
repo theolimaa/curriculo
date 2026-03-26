@@ -1,1 +1,11 @@
-export { default } from "./landing/page";
+"use client";
+
+import { useEffect } from "react";
+
+export default function Home() {
+  useEffect(() => {
+    window.location.replace("/landing");
+  }, []);
+
+  return null;
+}
