@@ -2,267 +2,300 @@
 
 import { useState, useEffect } from "react";
 
+const RED = "#d0290a";
+const DARK = "#111111";
+const CREAM = "#f5f0eb";
+
 export default function LandingPage() {
   const [count, setCount] = useState(1247);
+  const [faqOpen, setFaqOpen] = useState<number | null>(null);
 
   useEffect(() => {
-    const t = setInterval(() => {
-      setCount((c) => c + Math.floor(Math.random() * 3));
-    }, 8000);
+    const t = setInterval(() => setCount((c) => c + Math.floor(Math.random() * 3)), 8000);
     return () => clearInterval(t);
   }, []);
 
-  return (
-    <div style={{ fontFamily: "'Barlow', sans-serif", background: "#f5f0eb", color: "#111", overflowX: "hidden" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,800;0,900;1,900&display=swap" rel="stylesheet" />
+  const faqs = [
+    { q: "Como o método garante um currículo profissional?", a: "O método foi desenvolvido com base nos padrões usados por recrutadores das maiores empresas do Brasil. Cada campo, seção e formatação segue critérios técnicos validados — desde a ordem das informações até o vocabulário adequado para cada área." },
+    { q: "Preciso ter experiência profissional para usar?", a: "Não. O método funciona tanto para quem está buscando o primeiro emprego quanto para profissionais com anos de experiência. Basta preencher com o que você tem — o sistema organiza e valoriza cada informação da melhor forma." },
+    { q: "O currículo fica pronto para enviar imediatamente?", a: "Sim. Ao final do processo você baixa um PDF formatado, pronto para anexar em qualquer vaga. Você ainda pode revisar e editar qualquer campo antes de baixar." },
+    { q: "Funciona pelo celular?", a: "Sim, o processo foi desenvolvido para funcionar perfeitamente no celular. Você preenche, revisa e baixa o PDF tudo pelo navegador, sem precisar instalar nada." },
+    { q: "Quanto tempo leva para ficar pronto?", a: "Em média 2 minutos. O tempo depende apenas de quanto você precisa digitar. O processamento e geração do PDF são quase instantâneos após o pagamento." },
+    { q: "Meus dados ficam salvos?", a: "Seus dados são usados exclusivamente para montar o currículo durante a sessão. Não armazenamos informações pessoais após a entrega do arquivo." },
+  ];
 
+  return (
+    <div style={{ fontFamily: "'Barlow', sans-serif", background: CREAM, color: DARK, overflowX: "hidden" }}>
       <style>{`
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .fade-up { animation: fadeUp 0.7s ease forwards; }
-        .cta-btn:hover { background: #111 !important; color: #f5f0eb !important; border-color: #111 !important; }
-        .cta-btn-inv:hover { background: #f5f0eb !important; color: #111 !important; border-color: #f5f0eb !important; }
-        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.12); }
-        .card-hover { transition: all 0.25s ease; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { animation: fadeUp 0.8s ease forwards; }
+        .btn-primary { background: ${DARK}; color: #fff; border: 2px solid ${DARK}; border-radius: 4px; font-family: 'Barlow', sans-serif; font-weight: 900; font-size: 16px; cursor: pointer; letter-spacing: 0.3px; transition: all 0.22s ease; text-transform: uppercase; padding: 16px 36px; }
+        .btn-primary:hover { background: ${RED}; border-color: ${RED}; transform: translateY(-2px); }
+        .btn-outline { background: transparent; color: ${DARK}; border: 2px solid ${DARK}; border-radius: 4px; font-family: 'Barlow', sans-serif; font-weight: 900; font-size: 13px; cursor: pointer; letter-spacing: 0.5px; transition: all 0.22s ease; text-transform: uppercase; padding: 10px 24px; }
+        .btn-outline:hover { background: ${RED}; border-color: ${RED}; color: #fff; }
+        .btn-inv { background: #fff; color: ${DARK}; border: 2px solid #fff; border-radius: 4px; font-family: 'Barlow', sans-serif; font-weight: 900; font-size: 17px; cursor: pointer; letter-spacing: 0.3px; transition: all 0.22s ease; text-transform: uppercase; padding: 18px 48px; }
+        .btn-inv:hover { background: ${RED}; border-color: ${RED}; color: #fff; transform: translateY(-2px); }
+        .step-card { background: #1a1a1a; border: 1px solid #2a2a2a; padding: 32px 24px; transition: all 0.25s ease; }
+        .step-card:hover { background: ${RED}; }
+        .step-card:hover .step-desc { color: rgba(255,255,255,0.8) !important; }
+        .step-card:hover .step-num { color: rgba(255,255,255,0.45) !important; }
+        .card-white { background: #fff; border: 1.5px solid #e0dbd4; padding: 32px 28px; transition: all 0.25s ease; }
+        .card-white:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); border-color: ${RED}; }
+        .faq-btn { width: 100%; background: transparent; border: none; text-align: left; padding: 24px 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-family: 'Barlow', sans-serif; font-size: 17px; font-weight: 800; color: ${DARK}; transition: color 0.2s; }
+        .faq-btn:hover { color: ${RED}; }
+        .faq-icon { width: 28px; height: 28px; border-radius: 50%; border: 2px solid currentColor; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; line-height: 1; transition: all 0.2s; }
         @media (max-width: 768px) {
-          .hero-grid { grid-template-columns: 1fr !important; }
-          .steps-grid { grid-template-columns: 1fr 1fr !important; }
-          .cards-grid { grid-template-columns: 1fr 1fr !important; }
-          .testimonials-grid { grid-template-columns: 1fr !important; }
-          .stats-grid { grid-template-columns: 1fr !important; }
+          .hero-grid, .problem-grid { grid-template-columns: 1fr !important; }
+          .steps-grid, .cards-grid { grid-template-columns: 1fr 1fr !important; }
+          .testimonials-grid, .stats-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
 
       {/* BARRA TOPO */}
-      <div style={{ background: "#d0290a", padding: "10px 20px", overflow: "hidden" }}>
-        <div style={{ display: "flex", gap: "80px", animation: "ticker 20s linear infinite", width: "max-content" }}>
+      <div style={{ background: RED, padding: "10px 20px", overflow: "hidden" }}>
+        <div style={{ display: "flex", gap: "80px", animation: "ticker 22s linear infinite", width: "max-content" }}>
           {[...Array(8)].map((_, i) => (
             <span key={i} style={{ color: "#fff", fontSize: "11px", fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", whiteSpace: "nowrap" }}>
-              {count.toLocaleString("pt-BR")} currículos gerados — Pagamento via Pix — PDF em minutos — Aprovado por recrutadores
+              PROMOCAO LIMITADA — De R$29,90 por R$4,90 — {count.toLocaleString("pt-BR")} curriculos entregues — Metodo validado por recrutadores
             </span>
           ))}
         </div>
       </div>
 
       {/* NAV */}
-      <nav style={{ background: "#f5f0eb", padding: "18px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1.5px solid #111" }}>
-        <div style={{ fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
-          CURRÍCULO <span style={{ color: "#d0290a" }}>IA</span>
-        </div>
-        <button className="cta-btn" onClick={() => window.location.href = "/formulario"}
-          style={{ background: "#d0290a", color: "#fff", border: "2px solid #d0290a", borderRadius: "4px", padding: "10px 24px", fontWeight: 800, fontSize: "13px", letterSpacing: "0.5px", cursor: "pointer", textTransform: "uppercase", transition: "all 0.2s" }}>
-          Gerar meu currículo
-        </button>
+      <nav style={{ background: CREAM, padding: "18px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1.5px solid ${DARK}` }}>
+        <Logo />
+        <button className="btn-outline" onClick={() => window.location.href = "/formulario"}>Gerar meu currículo</button>
       </nav>
 
       {/* HERO */}
-      <section style={{ padding: "80px 40px 0", maxWidth: "1100px", margin: "0 auto" }}>
-        <div className="hero-grid fade-up" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px", alignItems: "end" }}>
+      <section style={{ padding: "80px 40px 120px", maxWidth: "1100px", margin: "0 auto" }}>
+        <div className="hero-grid fade-up" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px", alignItems: "center" }}>
           <div>
-            <div style={{ display: "inline-block", border: "1.5px solid #111", borderRadius: "2px", padding: "4px 12px", fontSize: "11px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "24px" }}>
-              Inteligência Artificial
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", border: `1.5px solid ${DARK}`, borderRadius: "2px", padding: "5px 14px", fontSize: "11px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "24px" }}>
+              <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: RED }} />
+              Método validado por recrutadores
             </div>
-            <h1 style={{ fontSize: "clamp(44px, 6vw, 72px)", fontWeight: 900, lineHeight: 1.05, letterSpacing: "-2px", margin: "0 0 24px" }}>
-              Currículo<br />
-              profissional<br />
-              <span style={{ color: "#d0290a", fontStyle: "italic" }}>em 2 minutos.</span>
+            <h1 style={{ fontSize: "clamp(44px, 6vw, 72px)", fontWeight: 900, lineHeight: 1.05, letterSpacing: "-2px", margin: "0 0 20px" }}>
+              Currículo<br />profissional<br />
+              <span style={{ color: RED, fontStyle: "italic" }}>em 2 minutos.</span>
             </h1>
-            <p style={{ fontSize: "17px", color: "#444", lineHeight: 1.65, margin: "0 0 36px", maxWidth: "420px" }}>
-              Você preenche seus dados, a IA organiza e profissionaliza tudo, você revisa e baixa o PDF pronto para enviar.
+            <p style={{ fontSize: "17px", color: "#555", lineHeight: 1.7, margin: "0 0 20px", maxWidth: "440px" }}>
+              Você preenche seus dados, nosso método organiza e profissionaliza tudo seguindo os padrões usados pelos maiores recrutadores do Brasil.
             </p>
-            <button className="cta-btn" onClick={() => window.location.href = "/formulario"}
-              style={{ background: "#d0290a", color: "#fff", border: "2px solid #d0290a", borderRadius: "4px", padding: "16px 36px", fontWeight: 900, fontSize: "16px", cursor: "pointer", letterSpacing: "0.3px", transition: "all 0.2s", textTransform: "uppercase" }}>
-              Quero meu currículo — R$ 4,90
-            </button>
-            <p style={{ fontSize: "12px", color: "#888", marginTop: "12px", letterSpacing: "0.3px" }}>
-              Pagamento único via Pix. Sem assinatura.
-            </p>
+            {/* Promoção */}
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "16px", background: "#fff", border: `1.5px solid #e0dbd4`, borderRadius: "6px", padding: "14px 20px", marginBottom: "28px" }}>
+              <div>
+                <div style={{ fontSize: "11px", fontWeight: 700, color: "#999", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px" }}>Promoção por tempo limitado</div>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <span style={{ fontSize: "16px", color: "#bbb", textDecoration: "line-through", fontWeight: 600 }}>R$ 29,90</span>
+                  <span style={{ fontSize: "28px", fontWeight: 900, color: RED, letterSpacing: "-0.5px" }}>R$ 4,90</span>
+                </div>
+              </div>
+              <div style={{ width: "1px", height: "40px", background: "#e0dbd4" }} />
+              <div style={{ fontSize: "12px", color: "#888", fontWeight: 600, lineHeight: 1.5 }}>Pagamento<br />único via Pix</div>
+            </div>
+            <div>
+              <button className="btn-primary" onClick={() => window.location.href = "/formulario"}>
+                Quero meu currículo — R$ 4,90
+              </button>
+              <p style={{ fontSize: "12px", color: "#999", marginTop: "10px" }}>Sem assinatura. Sem cadastro. PDF imediato.</p>
+            </div>
           </div>
-
-          {/* MOCKUP */}
-          <div style={{ position: "relative", paddingBottom: "40px" }}>
-            <div style={{ background: "#fff", border: "1.5px solid #ddd", borderRadius: "8px", padding: "28px", boxShadow: "8px 8px 0 #111", position: "relative", zIndex: 2 }}>
-              <div style={{ borderBottom: "3px solid #d0290a", paddingBottom: "16px", marginBottom: "16px" }}>
-                <div style={{ height: "18px", background: "#111", borderRadius: "2px", width: "60%", marginBottom: "8px" }} />
-                <div style={{ height: "10px", background: "#ddd", borderRadius: "2px", width: "80%", marginBottom: "6px" }} />
-                <div style={{ height: "10px", background: "#ddd", borderRadius: "2px", width: "50%" }} />
+          {/* Mockup */}
+          <div style={{ position: "relative", paddingBottom: "30px" }}>
+            <div style={{ background: "#fff", border: `1.5px solid #ddd`, borderRadius: "8px", padding: "28px", boxShadow: `8px 8px 0 ${DARK}` }}>
+              <div style={{ borderBottom: `3px solid ${RED}`, paddingBottom: "16px", marginBottom: "16px" }}>
+                <div style={{ height: "18px", background: DARK, borderRadius: "2px", width: "58%", marginBottom: "8px" }} />
+                <div style={{ height: "10px", background: "#ddd", borderRadius: "2px", width: "78%", marginBottom: "5px" }} />
+                <div style={{ height: "10px", background: "#ddd", borderRadius: "2px", width: "48%" }} />
               </div>
               {["OBJETIVO", "EXPERIÊNCIA", "FORMAÇÃO", "HABILIDADES"].map((s, i) => (
                 <div key={s} style={{ marginBottom: "14px" }}>
-                  <div style={{ height: "9px", background: "#d0290a", borderRadius: "2px", width: "35%", marginBottom: "8px" }} />
-                  <div style={{ height: "8px", background: "#eee", borderRadius: "2px", width: `${70 + i * 8}%`, marginBottom: "5px" }} />
-                  <div style={{ height: "8px", background: "#eee", borderRadius: "2px", width: `${50 + i * 5}%` }} />
+                  <div style={{ height: "8px", background: RED, borderRadius: "2px", width: "30%", marginBottom: "8px" }} />
+                  <div style={{ height: "7px", background: "#eee", borderRadius: "2px", width: `${72 + i * 7}%`, marginBottom: "5px" }} />
+                  <div style={{ height: "7px", background: "#eee", borderRadius: "2px", width: `${52 + i * 4}%` }} />
                 </div>
               ))}
-              <div style={{ position: "absolute", top: "12px", right: "12px", background: "#d0290a", borderRadius: "4px", padding: "4px 10px" }}>
+              <div style={{ position: "absolute", top: "12px", right: "12px", background: RED, borderRadius: "4px", padding: "4px 10px" }}>
                 <span style={{ color: "#fff", fontSize: "10px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1px" }}>Profissional</span>
               </div>
             </div>
-            <div style={{ position: "absolute", bottom: "20px", right: "-10px", background: "#111", color: "#fff", borderRadius: "6px", padding: "12px 18px", zIndex: 3 }}>
-              <div style={{ fontSize: "20px", fontWeight: 900, color: "#d0290a" }}>R$ 4,90</div>
-              <div style={{ fontSize: "10px", color: "#999", letterSpacing: "0.5px" }}>pagamento único</div>
+            <div style={{ position: "absolute", bottom: "0px", right: "-16px", background: DARK, color: "#fff", borderRadius: "8px", padding: "14px 20px", boxShadow: "0 8px 24px rgba(0,0,0,0.2)" }}>
+              <div style={{ fontSize: "11px", color: "#666", letterSpacing: "1px", textTransform: "uppercase", marginBottom: "4px" }}>Economia de 84%</div>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <span style={{ fontSize: "14px", color: "#555", textDecoration: "line-through" }}>R$29,90</span>
+                <span style={{ fontSize: "22px", fontWeight: 900, color: RED }}>R$4,90</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* NÚMEROS */}
-      <section style={{ background: "#111", margin: "60px 0 0", padding: "48px 40px" }}>
-        <div className="stats-grid" style={{ maxWidth: "1100px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0" }}>
-          {[
-            { num: `${count.toLocaleString("pt-BR")}+`, label: "Currículos gerados" },
-            { num: "2 min", label: "Tempo médio de entrega" },
-            { num: "R$ 4,90", label: "Preço único, sem mensalidade" },
-          ].map((s, i) => (
-            <div key={s.label} style={{ padding: "20px 40px", borderRight: i < 2 ? "1px solid #333" : "none", textAlign: "center" }}>
-              <div style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 900, color: "#d0290a", letterSpacing: "-1px" }}>{s.num}</div>
-              <div style={{ fontSize: "13px", color: "#888", marginTop: "4px", textTransform: "uppercase", letterSpacing: "1px" }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <div style={{ background: `linear-gradient(to bottom, ${CREAM}, ${DARK})`, padding: "60px 0 0" }}>
+        <section style={{ background: DARK, padding: "60px 40px" }}>
+          <div className="stats-grid" style={{ maxWidth: "1100px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}>
+            {[
+              { num: `${count.toLocaleString("pt-BR")}+`, label: "Currículos entregues" },
+              { num: "2 min", label: "Tempo médio de entrega" },
+              { num: "R$ 4,90", label: "Preço único, sem mensalidade" },
+            ].map((s, i) => (
+              <div key={s.label} style={{ padding: "20px 40px", borderRight: i < 2 ? "1px solid #2a2a2a" : "none", textAlign: "center" }}>
+                <div style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 900, color: RED, letterSpacing: "-1px" }}>{s.num}</div>
+                <div style={{ fontSize: "12px", color: "#666", marginTop: "6px", textTransform: "uppercase", letterSpacing: "1.5px" }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
 
       {/* PROBLEMA */}
-      <section style={{ padding: "100px 40px", maxWidth: "1100px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center" }}>
-        <div>
-          <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-1.5px", margin: "0 0 24px" }}>
-            Você perdeu vagas<br />por causa do<br />
-            <span style={{ color: "#d0290a", fontStyle: "italic" }}>seu currículo.</span>
-          </h2>
-          <p style={{ fontSize: "16px", color: "#555", lineHeight: 1.7, margin: "0 0 16px" }}>
-            Recrutadores levam menos de 10 segundos para descartar um currículo. Formatação ruim, objetivo genérico, experiências mal escritas — e você nem sabe por que não é chamado.
-          </p>
-          <p style={{ fontSize: "16px", color: "#555", lineHeight: 1.7 }}>
-            A IA analisa seus dados e entrega um currículo com linguagem profissional, estrutura correta e formatação que chama atenção.
-          </p>
-        </div>
-        <div style={{ position: "relative" }}>
-          <div style={{ background: "#fff", border: "1.5px solid #ddd", borderRadius: "8px", padding: "20px", opacity: 0.45, marginBottom: "-30px", position: "relative", zIndex: 1 }}>
-            <div style={{ height: "12px", background: "#ccc", borderRadius: "2px", width: "45%", marginBottom: "20px" }} />
-            {[60, 80, 40, 70].map((w, i) => (
-              <div key={i} style={{ height: "8px", background: "#e5e5e5", borderRadius: "2px", width: `${w}%`, marginBottom: "8px" }} />
-            ))}
-            <div style={{ position: "absolute", top: "10px", right: "10px", background: "#e5e5e5", borderRadius: "3px", padding: "3px 8px", fontSize: "9px", fontWeight: 800, color: "#999", textTransform: "uppercase" }}>Descartado</div>
-          </div>
-          <div style={{ background: "#fff", border: "2px solid #111", borderRadius: "8px", padding: "20px", boxShadow: "6px 6px 0 #d0290a", position: "relative", zIndex: 2, marginLeft: "30px" }}>
-            <div style={{ height: "14px", background: "#111", borderRadius: "2px", width: "55%", marginBottom: "8px" }} />
-            <div style={{ height: "8px", background: "#ddd", borderRadius: "2px", width: "75%", marginBottom: "16px" }} />
-            {[85, 65, 90, 70].map((w, i) => (
-              <div key={i} style={{ height: "8px", background: i % 2 === 0 ? "#f0d0cc" : "#e5e5e5", borderRadius: "2px", width: `${w}%`, marginBottom: "8px" }} />
-            ))}
-            <div style={{ position: "absolute", top: "10px", right: "10px", background: "#d0290a", borderRadius: "3px", padding: "3px 8px", fontSize: "9px", fontWeight: 800, color: "#fff", textTransform: "uppercase" }}>Aprovado</div>
-          </div>
-        </div>
-      </section>
-
-      {/* COMO FUNCIONA — DARK */}
-      <section style={{ background: "#111", color: "#fff", padding: "100px 40px" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "60px", flexWrap: "wrap", gap: "20px" }}>
-            <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, letterSpacing: "-1.5px", lineHeight: 1.1 }}>
-              Como funciona?
-            </h2>
-            <p style={{ color: "#666", fontSize: "15px", maxWidth: "320px", lineHeight: 1.6 }}>
-              Quatro passos simples. Do zero ao currículo profissional em menos de 2 minutos.
-            </p>
-          </div>
-          <div className="steps-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "2px" }}>
-            {[
-              { n: "01", title: "Preencha seus dados", desc: "Nome, experiências, formação e habilidades. Direto no celular." },
-              { n: "02", title: "Pague R$ 4,90 no Pix", desc: "Instantâneo e seguro. Sem cartão, sem burocracia." },
-              { n: "03", title: "A IA monta tudo", desc: "Linguagem profissional, estrutura correta, formatação impecável." },
-              { n: "04", title: "Revise e baixe o PDF", desc: "Edite o que quiser. Baixe e envie para as vagas." },
-            ].map((s, i) => (
-              <div key={s.n} className="card-hover" style={{ background: i === 0 ? "#d0290a" : "#1a1a1a", border: "1px solid #2a2a2a", padding: "32px 24px" }}>
-                <div style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "2px", color: i === 0 ? "rgba(255,255,255,0.6)" : "#555", textTransform: "uppercase", marginBottom: "40px" }}>{s.n}</div>
-                <h3 style={{ fontSize: "17px", fontWeight: 800, color: "#fff", margin: "0 0 12px", lineHeight: 1.3 }}>{s.title}</h3>
-                <p style={{ fontSize: "13px", color: i === 0 ? "rgba(255,255,255,0.75)" : "#666", lineHeight: 1.6 }}>{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PARA QUEM É */}
-      <section style={{ padding: "100px 40px", background: "#f5f0eb" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <div style={{ marginBottom: "60px" }}>
-            <div style={{ display: "inline-block", border: "1.5px solid #111", borderRadius: "2px", padding: "4px 12px", fontSize: "11px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "20px" }}>
-              Para quem é
+      <div style={{ background: `linear-gradient(to bottom, ${DARK}, ${CREAM})`, padding: "60px 0 0" }}>
+        <section style={{ background: CREAM, padding: "80px 40px 100px" }}>
+          <div className="problem-grid" style={{ maxWidth: "1100px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center" }}>
+            <div>
+              <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-1.5px", margin: "0 0 24px" }}>
+                Você perdeu vagas<br />por causa do<br /><span style={{ color: RED, fontStyle: "italic" }}>seu currículo.</span>
+              </h2>
+              <p style={{ fontSize: "16px", color: "#555", lineHeight: 1.7, margin: "0 0 16px" }}>Recrutadores levam menos de 10 segundos para descartar um currículo. Formatação ruim, objetivo genérico, experiências mal escritas — e você não sabe por que não é chamado.</p>
+              <p style={{ fontSize: "16px", color: "#555", lineHeight: 1.7 }}>Nosso método foi construído sobre os critérios reais que recrutadores usam para selecionar candidatos — e aplica tudo automaticamente nos seus dados.</p>
             </div>
-            <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, letterSpacing: "-1.5px", lineHeight: 1.1 }}>
-              Se você se encaixa<br />em um desses perfis,<br />
-              <span style={{ color: "#d0290a", fontStyle: "italic" }}>esse produto é pra você.</span>
-            </h2>
-          </div>
-          <div className="cards-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2px" }}>
-            {[
-              { title: "Primeiro emprego", desc: "Nunca trabalhou com carteira assinada e não sabe por onde começar." },
-              { title: "Recolocação", desc: "Foi demitido e precisa se reposicionar rápido no mercado." },
-              { title: "Mudança de área", desc: "Quer migrar de setor mas não sabe como valorizar sua experiência." },
-              { title: "Sem tempo", desc: "Trabalha o dia todo e não tem horas para ficar montando currículo." },
-              { title: "Sem computador", desc: "Só tem o celular e precisa de uma solução que funcione nele." },
-              { title: "Currículo antigo", desc: "Tem um currículo desatualizado e feio que está atrapalhando sua carreira." },
-            ].map((c) => (
-              <div key={c.title} className="card-hover" style={{ background: "#fff", border: "1.5px solid #ddd", padding: "32px 28px" }}>
-                <div style={{ width: "32px", height: "3px", background: "#d0290a", marginBottom: "20px" }} />
-                <h3 style={{ fontSize: "17px", fontWeight: 800, margin: "0 0 10px" }}>{c.title}</h3>
-                <p style={{ fontSize: "14px", color: "#666", lineHeight: 1.6 }}>{c.desc}</p>
+            <div style={{ position: "relative" }}>
+              <div style={{ background: "#fff", border: "1.5px solid #ddd", borderRadius: "8px", padding: "20px", opacity: 0.4, marginBottom: "-30px", position: "relative", zIndex: 1 }}>
+                <div style={{ height: "12px", background: "#ccc", borderRadius: "2px", width: "45%", marginBottom: "20px" }} />
+                {[60, 80, 40, 70].map((w, i) => <div key={i} style={{ height: "8px", background: "#e5e5e5", borderRadius: "2px", width: `${w}%`, marginBottom: "8px" }} />)}
+                <div style={{ position: "absolute", top: "10px", right: "10px", background: "#e0e0e0", borderRadius: "3px", padding: "3px 8px", fontSize: "9px", fontWeight: 800, color: "#999", textTransform: "uppercase" }}>Descartado</div>
               </div>
-            ))}
+              <div style={{ background: "#fff", border: `2px solid ${DARK}`, borderRadius: "8px", padding: "20px", boxShadow: `6px 6px 0 ${RED}`, position: "relative", zIndex: 2, marginLeft: "30px" }}>
+                <div style={{ height: "14px", background: DARK, borderRadius: "2px", width: "55%", marginBottom: "8px" }} />
+                <div style={{ height: "8px", background: "#ddd", borderRadius: "2px", width: "75%", marginBottom: "16px" }} />
+                {[85, 65, 90, 70].map((w, i) => <div key={i} style={{ height: "8px", background: i % 2 === 0 ? "#f0d0cc" : "#e5e5e5", borderRadius: "2px", width: `${w}%`, marginBottom: "8px" }} />)}
+                <div style={{ position: "absolute", top: "10px", right: "10px", background: RED, borderRadius: "3px", padding: "3px 8px", fontSize: "9px", fontWeight: 800, color: "#fff", textTransform: "uppercase" }}>Aprovado</div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      {/* DEPOIMENTOS — DARK */}
-      <section style={{ background: "#111", color: "#fff", padding: "100px 40px" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, letterSpacing: "-1.5px", margin: "0 0 60px", lineHeight: 1.1 }}>
-            Quem usou,<br />
-            <span style={{ color: "#d0290a", fontStyle: "italic" }}>aprovou.</span>
-          </h2>
-          <div className="testimonials-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "2px" }}>
-            {[
-              { nome: "Fernanda S.", cidade: "São Paulo — SP", texto: "Nunca soube fazer currículo e sempre pedia ajuda pra alguém. Fiz sozinha em 5 minutos e já fui chamada pra entrevista na semana seguinte.", destaque: false },
-              { nome: "Carlos M.", cidade: "Fortaleza — CE", texto: "Tava desempregado há 4 meses. Refiz meu currículo aqui e em 1 semana já tava com proposta em mão. Vale muito mais do que R$ 4,90.", destaque: true },
-              { nome: "Juliana R.", cidade: "Belo Horizonte — MG", texto: "Minha filha usou para conseguir o primeiro emprego. O currículo ficou muito profissional, parece que foi feito por um especialista de RH.", destaque: false },
-            ].map((d) => (
-              <div key={d.nome} style={{ background: d.destaque ? "#d0290a" : "#1a1a1a", padding: "36px 28px", borderLeft: "1px solid #2a2a2a" }}>
-                <div style={{ display: "flex", gap: "4px", marginBottom: "20px" }}>
-                  {[...Array(5)].map((_, j) => (
-                    <div key={j} style={{ width: "10px", height: "10px", background: d.destaque ? "rgba(255,255,255,0.6)" : "#d0290a", borderRadius: "50%" }} />
-                  ))}
+      {/* COMO FUNCIONA */}
+      <div style={{ background: `linear-gradient(to bottom, ${CREAM}, ${DARK})`, padding: "60px 0 0" }}>
+        <section style={{ background: DARK, color: "#fff", padding: "80px 40px 100px" }}>
+          <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "60px", flexWrap: "wrap", gap: "20px" }}>
+              <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, letterSpacing: "-1.5px", lineHeight: 1.1 }}>Como funciona?</h2>
+              <p style={{ color: "#666", fontSize: "15px", maxWidth: "320px", lineHeight: 1.6 }}>Quatro passos. Do zero ao currículo profissional em menos de 2 minutos.</p>
+            </div>
+            <div className="steps-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "2px" }}>
+              {[
+                { n: "01", title: "Preencha seus dados", desc: "Nome, experiências, formação e habilidades. Simples, direto no celular." },
+                { n: "02", title: "Pague R$ 4,90 no Pix", desc: "Instantâneo e seguro. Sem cartão, sem cadastro, sem burocracia." },
+                { n: "03", title: "O método organiza tudo", desc: "Padrão profissional, estrutura validada, linguagem de mercado." },
+                { n: "04", title: "Revise e baixe o PDF", desc: "Edite o que quiser. Baixe e envie para as vagas na hora." },
+              ].map((s) => (
+                <div key={s.n} className="step-card">
+                  <div className="step-num" style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "40px" }}>{s.n}</div>
+                  <h3 style={{ fontSize: "17px", fontWeight: 800, color: "#fff", margin: "0 0 12px", lineHeight: 1.3 }}>{s.title}</h3>
+                  <p className="step-desc" style={{ fontSize: "13px", color: "#666", lineHeight: 1.6 }}>{s.desc}</p>
                 </div>
-                <p style={{ fontSize: "15px", color: d.destaque ? "rgba(255,255,255,0.9)" : "#ccc", lineHeight: 1.7, margin: "0 0 24px", fontStyle: "italic" }}>
-                  "{d.texto}"
-                </p>
-                <div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* PARA QUEM */}
+      <div style={{ background: `linear-gradient(to bottom, ${DARK}, ${CREAM})`, padding: "60px 0 0" }}>
+        <section style={{ background: CREAM, padding: "80px 40px 100px" }}>
+          <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+            <div style={{ marginBottom: "60px" }}>
+              <div style={{ display: "inline-block", border: `1.5px solid ${DARK}`, borderRadius: "2px", padding: "4px 12px", fontSize: "11px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "20px" }}>Para quem é</div>
+              <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, letterSpacing: "-1.5px", lineHeight: 1.1 }}>
+                Se você se encaixa<br />em um desses perfis,<br /><span style={{ color: RED, fontStyle: "italic" }}>esse método é pra você.</span>
+              </h2>
+            </div>
+            <div className="cards-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2px" }}>
+              {[
+                { title: "Primeiro emprego", desc: "Nunca trabalhou com carteira assinada e não sabe por onde começar." },
+                { title: "Recolocação", desc: "Foi demitido e precisa se reposicionar rápido no mercado." },
+                { title: "Mudança de área", desc: "Quer migrar de setor mas não sabe como valorizar sua experiência." },
+                { title: "Sem tempo", desc: "Trabalha o dia todo e não tem horas para ficar montando currículo." },
+                { title: "Sem computador", desc: "Só tem o celular e precisa de uma solução que funcione nele." },
+                { title: "Currículo antigo", desc: "Tem um currículo desatualizado que está atrapalhando sua carreira." },
+              ].map((c) => (
+                <div key={c.title} className="card-white">
+                  <div style={{ width: "32px", height: "3px", background: RED, marginBottom: "20px" }} />
+                  <h3 style={{ fontSize: "17px", fontWeight: 800, margin: "0 0 10px" }}>{c.title}</h3>
+                  <p style={{ fontSize: "14px", color: "#666", lineHeight: 1.6 }}>{c.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* DEPOIMENTOS */}
+      <div style={{ background: `linear-gradient(to bottom, ${CREAM}, ${DARK})`, padding: "60px 0 0" }}>
+        <section style={{ background: DARK, color: "#fff", padding: "80px 40px 100px" }}>
+          <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+            <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, letterSpacing: "-1.5px", margin: "0 0 60px", lineHeight: 1.1 }}>
+              Quem usou,<br /><span style={{ color: RED, fontStyle: "italic" }}>aprovou.</span>
+            </h2>
+            <div className="testimonials-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "2px" }}>
+              {[
+                { nome: "Fernanda S.", cidade: "São Paulo — SP", texto: "Nunca soube fazer currículo e sempre pedia ajuda pra alguém. Fiz sozinha em 5 minutos e já fui chamada pra entrevista na semana seguinte.", destaque: false },
+                { nome: "Carlos M.", cidade: "Fortaleza — CE", texto: "Tava desempregado há 4 meses. Refiz meu currículo aqui e em 1 semana já tava com proposta em mão. Vale muito mais do que R$ 4,90.", destaque: true },
+                { nome: "Juliana R.", cidade: "Belo Horizonte — MG", texto: "Minha filha usou para conseguir o primeiro emprego. O currículo ficou muito profissional, parece que foi feito por especialista de RH.", destaque: false },
+              ].map((d) => (
+                <div key={d.nome} style={{ background: d.destaque ? RED : "#1a1a1a", padding: "36px 28px", borderLeft: "1px solid #2a2a2a" }}>
+                  <div style={{ display: "flex", gap: "4px", marginBottom: "20px" }}>
+                    {[...Array(5)].map((_, j) => <div key={j} style={{ width: "10px", height: "10px", background: d.destaque ? "rgba(255,255,255,0.6)" : RED, borderRadius: "50%" }} />)}
+                  </div>
+                  <p style={{ fontSize: "15px", color: d.destaque ? "rgba(255,255,255,0.9)" : "#ccc", lineHeight: 1.7, margin: "0 0 24px", fontStyle: "italic" }}>"{d.texto}"</p>
                   <div style={{ fontSize: "14px", fontWeight: 800, color: "#fff" }}>{d.nome}</div>
                   <div style={{ fontSize: "11px", color: d.destaque ? "rgba(255,255,255,0.5)" : "#555", letterSpacing: "0.5px", marginTop: "2px" }}>{d.cidade}</div>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* FAQ */}
+      <div style={{ background: `linear-gradient(to bottom, ${DARK}, ${CREAM})`, padding: "60px 0 0" }}>
+        <section style={{ background: CREAM, padding: "80px 40px 100px" }}>
+          <div style={{ maxWidth: "760px", margin: "0 auto" }}>
+            <div style={{ display: "inline-block", border: `1.5px solid ${DARK}`, borderRadius: "2px", padding: "4px 12px", fontSize: "11px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "20px" }}>Dúvidas frequentes</div>
+            <h2 style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 900, letterSpacing: "-1.5px", lineHeight: 1.1, margin: "0 0 48px" }}>
+              Perguntas sobre<br /><span style={{ color: RED, fontStyle: "italic" }}>o método.</span>
+            </h2>
+            {faqs.map((faq, i) => (
+              <div key={i} style={{ borderBottom: `1.5px solid #e0dbd4` }}>
+                <button className="faq-btn" onClick={() => setFaqOpen(faqOpen === i ? null : i)}>
+                  <span>{faq.q}</span>
+                  <span className="faq-icon">{faqOpen === i ? "−" : "+"}</span>
+                </button>
+                {faqOpen === i && (
+                  <div style={{ paddingBottom: "24px", fontSize: "15px", color: "#555", lineHeight: 1.75, animation: "fadeUp 0.25s ease forwards" }}>{faq.a}</div>
+                )}
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      {/* CTA FINAL — VERMELHO */}
-      <section style={{ background: "#d0290a", padding: "100px 40px", textAlign: "center" }}>
+      {/* CTA FINAL */}
+      <section style={{ background: RED, padding: "100px 40px", textAlign: "center" }}>
         <div style={{ maxWidth: "700px", margin: "0 auto" }}>
-          <div style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.6)", marginBottom: "20px" }}>
-            Oferta
+          <div style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.6)", marginBottom: "20px" }}>Promoção por tempo limitado</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "20px", marginBottom: "8px", flexWrap: "wrap" }}>
+            <span style={{ fontSize: "clamp(20px, 3vw, 30px)", color: "rgba(255,255,255,0.45)", textDecoration: "line-through", fontWeight: 700 }}>R$ 29,90</span>
+            <h2 style={{ fontSize: "clamp(52px, 8vw, 96px)", fontWeight: 900, color: "#fff", letterSpacing: "-3px", lineHeight: 1 }}>R$ 4,90</h2>
           </div>
-          <h2 style={{ fontSize: "clamp(52px, 8vw, 96px)", fontWeight: 900, color: "#fff", letterSpacing: "-3px", lineHeight: 1, margin: "0 0 16px" }}>
-            R$ 4,90
-          </h2>
-          <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.75)", margin: "0 0 40px", lineHeight: 1.6 }}>
-            Pagamento único via Pix.<br />Currículo profissional em 2 minutos.
-          </p>
-          <button className="cta-btn-inv" onClick={() => window.location.href = "/formulario"}
-            style={{ background: "#fff", color: "#d0290a", border: "2px solid #fff", borderRadius: "4px", padding: "18px 48px", fontWeight: 900, fontSize: "17px", cursor: "pointer", letterSpacing: "0.3px", transition: "all 0.2s", textTransform: "uppercase" }}>
-            Gerar meu currículo agora
-          </button>
+          <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.75)", margin: "0 0 40px", lineHeight: 1.6 }}>Pagamento único via Pix.<br />Currículo profissional em 2 minutos.</p>
+          <button className="btn-inv" onClick={() => window.location.href = "/formulario"}>Gerar meu currículo agora</button>
           <div style={{ marginTop: "24px", display: "flex", justifyContent: "center", gap: "32px", flexWrap: "wrap" }}>
             {["Pagamento seguro via Pix", "Entrega imediata", "Funciona no celular"].map((t) => (
               <span key={t} style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase" }}>{t}</span>
@@ -272,14 +305,31 @@ export default function LandingPage() {
       </section>
 
       {/* RODAPÉ */}
-      <footer style={{ background: "#111", padding: "28px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
-        <div style={{ fontWeight: 900, fontSize: "16px", letterSpacing: "-0.5px", color: "#fff" }}>
-          CURRÍCULO <span style={{ color: "#d0290a" }}>IA</span>
-        </div>
-        <p style={{ fontSize: "12px", color: "#555" }}>
-          © 2026 Currículo IA — Todos os direitos reservados
-        </p>
+      <footer style={{ background: DARK, padding: "28px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
+        <Logo light />
+        <p style={{ fontSize: "12px", color: "#555" }}>© 2026 Currículo Pro — Todos os direitos reservados</p>
       </footer>
+    </div>
+  );
+}
+
+function Logo({ light = false }: { light?: boolean }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="64" height="64" rx="8" fill="#d0290a" />
+        <rect x="14" y="14" width="36" height="4" rx="2" fill="#fff" />
+        <rect x="14" y="22" width="26" height="3" rx="1.5" fill="rgba(255,255,255,0.6)" />
+        <rect x="14" y="30" width="36" height="2" rx="1" fill="rgba(255,255,255,0.3)" />
+        <rect x="14" y="35" width="30" height="2" rx="1" fill="rgba(255,255,255,0.3)" />
+        <rect x="14" y="40" width="36" height="2" rx="1" fill="rgba(255,255,255,0.3)" />
+        <rect x="14" y="45" width="24" height="2" rx="1" fill="rgba(255,255,255,0.3)" />
+        <circle cx="46" cy="46" r="12" fill="#111" />
+        <path d="M41 46l3.5 3.5L51 41" stroke="#d0290a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <span style={{ fontWeight: 900, fontSize: "17px", letterSpacing: "-0.5px", color: light ? "#fff" : "#111" }}>
+        CURRÍCULO <span style={{ color: "#d0290a" }}>PRO</span>
+      </span>
     </div>
   );
 }
