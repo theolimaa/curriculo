@@ -50,7 +50,7 @@ export default function LandingPage() {
         <div style={{ fontWeight: 900, fontSize: "18px", letterSpacing: "-0.5px" }}>
           CURRÍCULO <span style={{ color: "#d0290a" }}>IA</span>
         </div>
-        <button className="cta-btn" onClick={() => window.location.href = "/"}
+        <button className="cta-btn" onClick={() => window.location.href = "/formulario"}
           style={{ background: "#d0290a", color: "#fff", border: "2px solid #d0290a", borderRadius: "4px", padding: "10px 24px", fontWeight: 800, fontSize: "13px", letterSpacing: "0.5px", cursor: "pointer", textTransform: "uppercase", transition: "all 0.2s" }}>
           Gerar meu currículo
         </button>
@@ -71,7 +71,7 @@ export default function LandingPage() {
             <p style={{ fontSize: "17px", color: "#444", lineHeight: 1.65, margin: "0 0 36px", maxWidth: "420px" }}>
               Você preenche seus dados, a IA organiza e profissionaliza tudo, você revisa e baixa o PDF pronto para enviar.
             </p>
-            <button className="cta-btn" onClick={() => window.location.href = "/"}
+            <button className="cta-btn" onClick={() => window.location.href = "/formulario"}
               style={{ background: "#d0290a", color: "#fff", border: "2px solid #d0290a", borderRadius: "4px", padding: "16px 36px", fontWeight: 900, fontSize: "16px", cursor: "pointer", letterSpacing: "0.3px", transition: "all 0.2s", textTransform: "uppercase" }}>
               Quero meu currículo — R$ 4,90
             </button>
@@ -259,7 +259,7 @@ export default function LandingPage() {
           <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.75)", margin: "0 0 40px", lineHeight: 1.6 }}>
             Pagamento único via Pix.<br />Currículo profissional em 2 minutos.
           </p>
-          <button className="cta-btn-inv" onClick={() => window.location.href = "/"}
+          <button className="cta-btn-inv" onClick={() => window.location.href = "/formulario"}
             style={{ background: "#fff", color: "#d0290a", border: "2px solid #fff", borderRadius: "4px", padding: "18px 48px", fontWeight: 900, fontSize: "17px", cursor: "pointer", letterSpacing: "0.3px", transition: "all 0.2s", textTransform: "uppercase" }}>
             Gerar meu currículo agora
           </button>
