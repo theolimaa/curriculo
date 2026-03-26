@@ -58,7 +58,7 @@ export default function LandingPage() {
         <div style={{ display: "flex", gap: "80px", animation: "ticker 22s linear infinite", width: "max-content" }}>
           {[...Array(8)].map((_, i) => (
             <span key={i} style={{ color: "#fff", fontSize: "11px", fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", whiteSpace: "nowrap" }}>
-              PROMOCAO LIMITADA — De R$29,90 por R$4,90 — {count.toLocaleString("pt-BR")} curriculos entregues — Metodo validado por recrutadores
+              PROMOCAO LIMITADA — De R$29,90 por R$5,00 — {count.toLocaleString("pt-BR")} curriculos entregues — Metodo validado por recrutadores
             </span>
           ))}
         </div>
@@ -91,7 +91,7 @@ export default function LandingPage() {
                 <div style={{ fontSize: "11px", fontWeight: 700, color: "#999", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px" }}>Promoção por tempo limitado</div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <span style={{ fontSize: "16px", color: "#bbb", textDecoration: "line-through", fontWeight: 600 }}>R$ 29,90</span>
-                  <span style={{ fontSize: "28px", fontWeight: 900, color: RED, letterSpacing: "-0.5px" }}>R$ 4,90</span>
+                  <span style={{ fontSize: "28px", fontWeight: 900, color: RED, letterSpacing: "-0.5px" }}>R$ 5,00</span>
                 </div>
               </div>
               <div style={{ width: "1px", height: "40px", background: "#e0dbd4" }} />
@@ -99,7 +99,7 @@ export default function LandingPage() {
             </div>
             <div>
               <button className="btn-primary" onClick={() => window.location.href = "/formulario"}>
-                Quero meu currículo — R$ 4,90
+                Quero meu currículo — R$ 5,00
               </button>
               <p style={{ fontSize: "12px", color: "#999", marginTop: "10px" }}>Sem assinatura. Sem cadastro. PDF imediato.</p>
             </div>
@@ -127,7 +127,7 @@ export default function LandingPage() {
               <div style={{ fontSize: "11px", color: "#666", letterSpacing: "1px", textTransform: "uppercase", marginBottom: "4px" }}>Economia de 84%</div>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <span style={{ fontSize: "14px", color: "#555", textDecoration: "line-through" }}>R$29,90</span>
-                <span style={{ fontSize: "22px", fontWeight: 900, color: RED }}>R$4,90</span>
+                <span style={{ fontSize: "22px", fontWeight: 900, color: RED }}>R$5,00</span>
               </div>
             </div>
           </div>
@@ -141,7 +141,7 @@ export default function LandingPage() {
             {[
               { num: `${count.toLocaleString("pt-BR")}+`, label: "Currículos entregues" },
               { num: "2 min", label: "Tempo médio de entrega" },
-              { num: "R$ 4,90", label: "Preço único, sem mensalidade" },
+              { num: "R$ 5,00", label: "Preço único, sem mensalidade" },
             ].map((s, i) => (
               <div key={s.label} style={{ padding: "20px 40px", borderRight: i < 2 ? "1px solid #2a2a2a" : "none", textAlign: "center" }}>
                 <div style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 900, color: RED, letterSpacing: "-1px" }}>{s.num}</div>
@@ -320,7 +320,7 @@ export default function LandingPage() {
           {/* CTA abaixo */}
           <div style={{ textAlign: "center", marginTop: "60px" }}>
             <button className="btn-primary" onClick={() => window.location.href = "/formulario"}>
-              Quero o meu assim — R$ 4,90
+              Quero o meu assim — R$ 5,00
             </button>
           </div>
         </div>
@@ -337,7 +337,7 @@ export default function LandingPage() {
             <div className="steps-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "2px" }}>
               {[
                 { n: "01", title: "Preencha seus dados", desc: "Nome, experiências, formação e habilidades. Simples, direto no celular." },
-                { n: "02", title: "Pague R$ 4,90 no Pix", desc: "Instantâneo e seguro. Sem cartão, sem cadastro, sem burocracia." },
+                { n: "02", title: "Pague R$ 5,00 no Pix", desc: "Instantâneo e seguro. Sem cartão, sem cadastro, sem burocracia." },
                 { n: "03", title: "O método organiza tudo", desc: "Padrão profissional, estrutura validada, linguagem de mercado." },
                 { n: "04", title: "Revise e baixe o PDF", desc: "Edite o que quiser. Baixe e envie para as vagas na hora." },
               ].map((s) => (
@@ -390,7 +390,7 @@ export default function LandingPage() {
             <div className="testimonials-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "2px" }}>
               {[
                 { nome: "Fernanda S.", cidade: "São Paulo — SP", texto: "Nunca soube fazer currículo e sempre pedia ajuda pra alguém. Fiz sozinha em 5 minutos e já fui chamada pra entrevista na semana seguinte.", destaque: false },
-                { nome: "Carlos M.", cidade: "Fortaleza — CE", texto: "Tava desempregado há 4 meses. Refiz meu currículo aqui e em 1 semana já tava com proposta em mão. Vale muito mais do que R$ 4,90.", destaque: true },
+                { nome: "Carlos M.", cidade: "Fortaleza — CE", texto: "Tava desempregado há 4 meses. Refiz meu currículo aqui e em 1 semana já tava com proposta em mão. Vale muito mais do que R$ 5,00.", destaque: true },
                 { nome: "Juliana R.", cidade: "Belo Horizonte — MG", texto: "Minha filha usou para conseguir o primeiro emprego. O currículo ficou muito profissional, parece que foi feito por especialista de RH.", destaque: false },
               ].map((d) => (
                 <div key={d.nome} style={{ background: d.destaque ? RED : "#1a1a1a", padding: "36px 28px", borderLeft: "1px solid #2a2a2a" }}>
@@ -413,7 +413,7 @@ export default function LandingPage() {
           <div style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.6)", marginBottom: "20px" }}>Promoção por tempo limitado</div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "20px", marginBottom: "8px", flexWrap: "wrap" }}>
             <span style={{ fontSize: "clamp(20px, 3vw, 30px)", color: "rgba(255,255,255,0.45)", textDecoration: "line-through", fontWeight: 700 }}>R$ 29,90</span>
-            <h2 style={{ fontSize: "clamp(52px, 8vw, 96px)", fontWeight: 900, color: "#fff", letterSpacing: "-3px", lineHeight: 1 }}>R$ 4,90</h2>
+            <h2 style={{ fontSize: "clamp(52px, 8vw, 96px)", fontWeight: 900, color: "#fff", letterSpacing: "-3px", lineHeight: 1 }}>R$ 5,00</h2>
           </div>
           <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.75)", margin: "0 0 40px", lineHeight: 1.6 }}>Pagamento único via Pix.<br />Currículo profissional em 2 minutos.</p>
           <button className="btn-inv" onClick={() => window.location.href = "/formulario"}>Gerar meu currículo agora</button>
