@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import MercadoPago from "mercadopago";
+import { MercadoPagoConfig, Payment } from "mercadopago";
 import { savePayment } from "@/lib/storage";
 
-const client = new MercadoPago.MercadoPagoConfig({
+const client = new MercadoPagoConfig({
   accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN!,
 });
 
@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.json();
 
-    const payment = new MercadoPago.Payment(client);
+    const payment = new Payment(client);
 
     const result = await payment.create({
       body: {
@@ -29,7 +29,6 @@ export async function POST(req: NextRequest) {
     const paymentId = String(result.id);
     const pixData = result.point_of_interaction?.transaction_data;
 
-    // Salva os dados do formulário associados ao pagamento
     savePayment(paymentId, formData);
 
     return NextResponse.json({
