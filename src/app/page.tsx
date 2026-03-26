@@ -135,8 +135,8 @@ export default function LandingPage() {
       </section>
 
       {/* NÚMEROS */}
-      <div style={{ background: `linear-gradient(to bottom, ${CREAM}, ${DARK})`, padding: "60px 0 0" }}>
-        <section style={{ background: DARK, padding: "60px 40px" }}>
+      <div style={{ height: "80px", background: `linear-gradient(to bottom, ${CREAM}, ${DARK})` }} />
+      <section style={{ background: DARK, padding: "60px 40px" }}>
           <div className="stats-grid" style={{ maxWidth: "1100px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}>
             {[
               { num: `${count.toLocaleString("pt-BR")}+`, label: "Currículos entregues" },
@@ -150,11 +150,10 @@ export default function LandingPage() {
             ))}
           </div>
         </section>
-      </div>
 
       {/* PROBLEMA */}
-      <div style={{ background: `linear-gradient(to bottom, ${DARK}, ${CREAM})`, padding: "60px 0 0" }}>
-        <section style={{ background: CREAM, padding: "80px 40px 100px" }}>
+      <div style={{ height: "80px", background: `linear-gradient(to bottom, ${DARK}, ${CREAM})` }} />
+      <section style={{ background: CREAM, padding: "80px 40px 100px" }}>
           <div className="problem-grid" style={{ maxWidth: "1100px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center" }}>
             <div>
               <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-1.5px", margin: "0 0 24px" }}>
@@ -178,11 +177,10 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-      </div>
 
       {/* COMO FUNCIONA */}
-      <div style={{ background: `linear-gradient(to bottom, ${CREAM}, ${DARK})`, padding: "60px 0 0" }}>
-        <section style={{ background: DARK, color: "#fff", padding: "80px 40px 100px" }}>
+      <div style={{ height: "80px", background: `linear-gradient(to bottom, ${CREAM}, ${DARK})` }} />
+      <section style={{ background: DARK, color: "#fff", padding: "80px 40px 100px" }}>
           <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "60px", flexWrap: "wrap", gap: "20px" }}>
               <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, letterSpacing: "-1.5px", lineHeight: 1.1 }}>Como funciona?</h2>
@@ -204,11 +202,10 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-      </div>
 
       {/* PARA QUEM */}
-      <div style={{ background: `linear-gradient(to bottom, ${DARK}, ${CREAM})`, padding: "60px 0 0" }}>
-        <section style={{ background: CREAM, padding: "80px 40px 100px" }}>
+      <div style={{ height: "80px", background: `linear-gradient(to bottom, ${DARK}, ${CREAM})` }} />
+      <section style={{ background: CREAM, padding: "80px 40px 100px" }}>
           <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
             <div style={{ marginBottom: "60px" }}>
               <div style={{ display: "inline-block", border: `1.5px solid ${DARK}`, borderRadius: "2px", padding: "4px 12px", fontSize: "11px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "20px" }}>Para quem é</div>
@@ -234,11 +231,10 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-      </div>
 
       {/* DEPOIMENTOS */}
-      <div style={{ background: `linear-gradient(to bottom, ${CREAM}, ${DARK})`, padding: "60px 0 0" }}>
-        <section style={{ background: DARK, color: "#fff", padding: "80px 40px 100px" }}>
+      <div style={{ height: "80px", background: `linear-gradient(to bottom, ${CREAM}, ${DARK})` }} />
+      <section style={{ background: DARK, color: "#fff", padding: "80px 40px 100px" }}>
           <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
             <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, letterSpacing: "-1.5px", margin: "0 0 60px", lineHeight: 1.1 }}>
               Quem usou,<br /><span style={{ color: RED, fontStyle: "italic" }}>aprovou.</span>
@@ -261,11 +257,10 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-      </div>
 
       {/* FAQ */}
-      <div style={{ background: `linear-gradient(to bottom, ${DARK}, ${CREAM})`, padding: "60px 0 0" }}>
-        <section style={{ background: CREAM, padding: "80px 40px 100px" }}>
+      <div style={{ height: "80px", background: `linear-gradient(to bottom, ${DARK}, ${CREAM})` }} />
+      <section style={{ background: CREAM, padding: "80px 40px 100px" }}>
           <div style={{ maxWidth: "760px", margin: "0 auto" }}>
             <div style={{ display: "inline-block", border: `1.5px solid ${DARK}`, borderRadius: "2px", padding: "4px 12px", fontSize: "11px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "20px" }}>Dúvidas frequentes</div>
             <h2 style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 900, letterSpacing: "-1.5px", lineHeight: 1.1, margin: "0 0 48px" }}>
@@ -284,7 +279,6 @@ export default function LandingPage() {
             ))}
           </div>
         </section>
-      </div>
 
       {/* CTA FINAL */}
       <section style={{ background: RED, padding: "100px 40px", textAlign: "center" }}>
