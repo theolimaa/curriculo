@@ -151,32 +151,180 @@ export default function LandingPage() {
           </div>
         </section>
 
-      {/* PROBLEMA */}
+      {/* ANTES E DEPOIS */}
       <div style={{ height: "80px", background: `linear-gradient(to bottom, ${DARK}, ${CREAM})` }} />
       <section style={{ background: CREAM, padding: "80px 40px 100px" }}>
-          <div className="problem-grid" style={{ maxWidth: "1100px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center" }}>
-            <div>
-              <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-1.5px", margin: "0 0 24px" }}>
-                Você perdeu vagas<br />por causa do<br /><span style={{ color: RED, fontStyle: "italic" }}>seu currículo.</span>
-              </h2>
-              <p style={{ fontSize: "16px", color: "#555", lineHeight: 1.7, margin: "0 0 16px" }}>Recrutadores levam menos de 10 segundos para descartar um currículo. Formatação ruim, objetivo genérico, experiências mal escritas — e você não sabe por que não é chamado.</p>
-              <p style={{ fontSize: "16px", color: "#555", lineHeight: 1.7 }}>Nosso método foi construído sobre os critérios reais que recrutadores usam para selecionar candidatos — e aplica tudo automaticamente nos seus dados.</p>
-            </div>
-            <div style={{ position: "relative" }}>
-              <div style={{ background: "#fff", border: "1.5px solid #ddd", borderRadius: "8px", padding: "20px", opacity: 0.4, marginBottom: "-30px", position: "relative", zIndex: 1 }}>
-                <div style={{ height: "12px", background: "#ccc", borderRadius: "2px", width: "45%", marginBottom: "20px" }} />
-                {[60, 80, 40, 70].map((w, i) => <div key={i} style={{ height: "8px", background: "#e5e5e5", borderRadius: "2px", width: `${w}%`, marginBottom: "8px" }} />)}
-                <div style={{ position: "absolute", top: "10px", right: "10px", background: "#e0e0e0", borderRadius: "3px", padding: "3px 8px", fontSize: "9px", fontWeight: 800, color: "#999", textTransform: "uppercase" }}>Descartado</div>
-              </div>
-              <div style={{ background: "#fff", border: `2px solid ${DARK}`, borderRadius: "8px", padding: "20px", boxShadow: `6px 6px 0 ${RED}`, position: "relative", zIndex: 2, marginLeft: "30px" }}>
-                <div style={{ height: "14px", background: DARK, borderRadius: "2px", width: "55%", marginBottom: "8px" }} />
-                <div style={{ height: "8px", background: "#ddd", borderRadius: "2px", width: "75%", marginBottom: "16px" }} />
-                {[85, 65, 90, 70].map((w, i) => <div key={i} style={{ height: "8px", background: i % 2 === 0 ? "#f0d0cc" : "#e5e5e5", borderRadius: "2px", width: `${w}%`, marginBottom: "8px" }} />)}
-                <div style={{ position: "absolute", top: "10px", right: "10px", background: RED, borderRadius: "3px", padding: "3px 8px", fontSize: "9px", fontWeight: 800, color: "#fff", textTransform: "uppercase" }}>Aprovado</div>
-              </div>
-            </div>
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "64px" }}>
+            <div style={{ display: "inline-block", border: `1.5px solid ${DARK}`, borderRadius: "2px", padding: "4px 12px", fontSize: "11px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "20px" }}>Transformação real</div>
+            <h2 style={{ fontSize: "clamp(36px, 4vw, 54px)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-1.5px" }}>
+              Veja a diferença<br />
+              <span style={{ color: RED, fontStyle: "italic" }}>na prática.</span>
+            </h2>
+            <p style={{ fontSize: "16px", color: "#777", marginTop: "16px", maxWidth: "520px", margin: "16px auto 0", lineHeight: 1.6 }}>
+              Recrutadores levam menos de 10 segundos para descartar um currículo. O seu precisa impressionar desde o primeiro olhar.
+            </p>
           </div>
-        </section>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: "32px", alignItems: "start" }}>
+
+            {/* ANTES */}
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+                <div style={{ background: "#e0e0e0", color: "#999", borderRadius: "3px", padding: "4px 12px", fontSize: "11px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1px" }}>Antes</div>
+                <span style={{ fontSize: "13px", color: "#aaa", fontWeight: 600 }}>Currículo comum — descartado</span>
+              </div>
+              <div style={{ background: "#fff", border: "1.5px solid #ddd", borderRadius: "6px", padding: "24px", fontFamily: "Arial, sans-serif", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", position: "relative", overflow: "hidden" }}>
+                {/* Marca d'agua */}
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%) rotate(-30deg)", fontSize: "48px", fontWeight: 900, color: "rgba(0,0,0,0.04)", letterSpacing: "-2px", whiteSpace: "nowrap", pointerEvents: "none" }}>DESCARTADO</div>
+
+                {/* Cabeçalho bagunçado */}
+                <div style={{ borderBottom: "1px solid #eee", paddingBottom: "12px", marginBottom: "12px" }}>
+                  <p style={{ fontSize: "16px", fontWeight: 700, color: "#333", margin: "0 0 4px" }}>JOAO DA SILVA</p>
+                  <p style={{ fontSize: "10px", color: "#999", margin: 0 }}>joaosilva123@hotmail.com | (11)987654321</p>
+                </div>
+
+                {/* Objetivo sem sentido */}
+                <div style={{ marginBottom: "10px" }}>
+                  <p style={{ fontSize: "10px", fontWeight: 700, color: "#555", margin: "0 0 4px", textTransform: "uppercase" }}>Objetivo</p>
+                  <p style={{ fontSize: "10px", color: "#888", lineHeight: 1.5, fontStyle: "italic" }}>
+                    "Trabalhar em uma empresa boa onde eu possa crescer profissionalmente e aprender mais coisas novas na minha área."
+                  </p>
+                </div>
+
+                {/* Experiencia mal escrita */}
+                <div style={{ marginBottom: "10px" }}>
+                  <p style={{ fontSize: "10px", fontWeight: 700, color: "#555", margin: "0 0 6px", textTransform: "uppercase" }}>Experiencia</p>
+                  <div style={{ marginBottom: "8px" }}>
+                    <p style={{ fontSize: "10px", color: "#333", margin: "0 0 2px" }}>Mercado bom preco - vendedor - 2019 até 2022</p>
+                    <p style={{ fontSize: "9px", color: "#aaa", lineHeight: 1.4 }}>
+                      fazia atendimento ao cliente, organizava prateleiras, ajudava a fazer inventario e outras coisas
+                    </p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "10px", color: "#333", margin: "0 0 2px" }}>padaria do zé - caixa - algum tempo</p>
+                    <p style={{ fontSize: "9px", color: "#aaa", lineHeight: 1.4 }}>
+                      operava o caixa e fazia troco
+                    </p>
+                  </div>
+                </div>
+
+                {/* Formacao */}
+                <div style={{ marginBottom: "10px" }}>
+                  <p style={{ fontSize: "10px", fontWeight: 700, color: "#555", margin: "0 0 4px", textTransform: "uppercase" }}>Formação</p>
+                  <p style={{ fontSize: "9px", color: "#888" }}>ensino medio - escola estadual - 2017</p>
+                </div>
+
+                {/* Habilidades aleatórias */}
+                <div>
+                  <p style={{ fontSize: "10px", fontWeight: 700, color: "#555", margin: "0 0 4px", textTransform: "uppercase" }}>Habilidades</p>
+                  <p style={{ fontSize: "9px", color: "#888", lineHeight: 1.6 }}>
+                    word, excel mais ou menos, internet, proativo, comunicativo, trabalho em equipe, responsavel
+                  </p>
+                </div>
+
+                {/* Problemas sinalizados */}
+                <div style={{ marginTop: "16px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                  {["Sem formatação", "Objetivo genérico", "Erros de português", "Datas imprecisas", "Texto informal"].map((p) => (
+                    <span key={p} style={{ background: "#fff0ee", border: "1px solid #fcc", borderRadius: "2px", padding: "2px 8px", fontSize: "9px", color: RED, fontWeight: 700 }}>{p}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* SETA */}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", paddingTop: "48px", gap: "8px" }}>
+              <div style={{ width: "48px", height: "48px", background: DARK, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 10h12M11 5l5 5-5 5" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <span style={{ fontSize: "10px", fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "1px", textAlign: "center", lineHeight: 1.4 }}>nosso<br/>método</span>
+            </div>
+
+            {/* DEPOIS */}
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+                <div style={{ background: RED, color: "#fff", borderRadius: "3px", padding: "4px 12px", fontSize: "11px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1px" }}>Depois</div>
+                <span style={{ fontSize: "13px", color: "#888", fontWeight: 600 }}>Currículo profissional — aprovado</span>
+              </div>
+              <div style={{ background: "#fff", border: `2px solid ${DARK}`, borderRadius: "6px", padding: "24px", fontFamily: "Georgia, serif", boxShadow: `6px 6px 0 ${RED}`, position: "relative" }}>
+
+                {/* Cabeçalho profissional */}
+                <div style={{ borderBottom: `3px solid ${RED}`, paddingBottom: "14px", marginBottom: "14px" }}>
+                  <p style={{ fontSize: "17px", fontWeight: 700, color: DARK, margin: "0 0 4px", fontFamily: "Arial, sans-serif", letterSpacing: "-0.5px" }}>João da Silva</p>
+                  <p style={{ fontSize: "10px", color: "#666", margin: "0 0 2px", fontFamily: "Arial, sans-serif" }}>joao.silva@gmail.com · (11) 98765-4321 · São Paulo — SP</p>
+                </div>
+
+                {/* Objetivo profissional */}
+                <div style={{ marginBottom: "12px" }}>
+                  <p style={{ fontSize: "9px", fontWeight: 700, color: RED, margin: "0 0 5px", textTransform: "uppercase", letterSpacing: "1.5px", fontFamily: "Arial, sans-serif" }}>Objetivo Profissional</p>
+                  <p style={{ fontSize: "9px", color: "#444", lineHeight: 1.6, fontFamily: "Arial, sans-serif" }}>
+                    Profissional de vendas e atendimento com 3 anos de experiência no varejo. Busca oportunidade para aplicar habilidades em relacionamento com clientes e gestão de ponto de venda em empresa de médio ou grande porte.
+                  </p>
+                </div>
+
+                {/* Experiência */}
+                <div style={{ marginBottom: "12px" }}>
+                  <p style={{ fontSize: "9px", fontWeight: 700, color: RED, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: "1.5px", fontFamily: "Arial, sans-serif" }}>Experiência Profissional</p>
+                  <div style={{ marginBottom: "8px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "3px" }}>
+                      <p style={{ fontSize: "10px", fontWeight: 700, color: DARK, margin: 0, fontFamily: "Arial, sans-serif" }}>Vendedor · Mercado Bom Preço</p>
+                      <p style={{ fontSize: "9px", color: "#999", margin: 0, fontFamily: "Arial, sans-serif" }}>Jan/2019 — Dez/2022</p>
+                    </div>
+                    <p style={{ fontSize: "9px", color: "#555", lineHeight: 1.6, fontFamily: "Arial, sans-serif" }}>
+                      Responsável pelo atendimento ao cliente, controle de estoque e reposição de mercadorias. Participação em inventários mensais e treinamento de novos colaboradores.
+                    </p>
+                  </div>
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "3px" }}>
+                      <p style={{ fontSize: "10px", fontWeight: 700, color: DARK, margin: 0, fontFamily: "Arial, sans-serif" }}>Operador de Caixa · Padaria São José</p>
+                      <p style={{ fontSize: "9px", color: "#999", margin: 0, fontFamily: "Arial, sans-serif" }}>Mar/2018 — Dez/2018</p>
+                    </div>
+                    <p style={{ fontSize: "9px", color: "#555", lineHeight: 1.6, fontFamily: "Arial, sans-serif" }}>
+                      Operação de caixa registradora, controle de pagamentos em dinheiro, cartão e Pix, fechamento de caixa diário.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Formação */}
+                <div style={{ marginBottom: "12px" }}>
+                  <p style={{ fontSize: "9px", fontWeight: 700, color: RED, margin: "0 0 5px", textTransform: "uppercase", letterSpacing: "1.5px", fontFamily: "Arial, sans-serif" }}>Formação Acadêmica</p>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <p style={{ fontSize: "9px", color: DARK, margin: 0, fontFamily: "Arial, sans-serif" }}>Ensino Médio Completo · EE Professor Álvaro Guião</p>
+                    <p style={{ fontSize: "9px", color: "#999", margin: 0, fontFamily: "Arial, sans-serif" }}>2017</p>
+                  </div>
+                </div>
+
+                {/* Habilidades */}
+                <div>
+                  <p style={{ fontSize: "9px", fontWeight: 700, color: RED, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: "1.5px", fontFamily: "Arial, sans-serif" }}>Habilidades</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                    {["Pacote Office", "Atendimento ao cliente", "Controle de estoque", "Trabalho em equipe", "Comunicação"].map((h) => (
+                      <span key={h} style={{ background: "#f5f0eb", border: `1px solid #ddd`, borderRadius: "2px", padding: "2px 7px", fontSize: "8px", color: "#555", fontWeight: 600, fontFamily: "Arial, sans-serif" }}>{h}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Selos */}
+                <div style={{ marginTop: "16px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                  {["Formatação profissional", "Objetivo direto", "Datas precisas", "Linguagem de mercado"].map((p) => (
+                    <span key={p} style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: "2px", padding: "2px 8px", fontSize: "9px", color: "#16a34a", fontWeight: 700 }}>{p}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* CTA abaixo */}
+          <div style={{ textAlign: "center", marginTop: "60px" }}>
+            <button className="btn-primary" onClick={() => window.location.href = "/formulario"}>
+              Quero o meu assim — R$ 4,90
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* COMO FUNCIONA */}
       <div style={{ height: "80px", background: `linear-gradient(to bottom, ${CREAM}, ${DARK})` }} />
