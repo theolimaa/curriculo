@@ -204,7 +204,7 @@ export default function Formulario() {
               <div style={{ display: "inline-flex", alignItems: "center", gap: "10px", background: "rgba(255,255,255,0.08)", borderRadius: "4px", padding: "8px 16px", marginBottom: "20px" }}>
                 <span style={{ fontSize: "14px", color: "#666", textDecoration: "line-through", fontWeight: 600 }}>R$ 29,90</span>
                 <span style={{ fontSize: "11px", color: "#888", textTransform: "uppercase", letterSpacing: "1px" }}>por apenas</span>
-                <span style={{ fontSize: "28px", fontWeight: 900, color: RED }}>R$ 4,90</span>
+                <span style={{ fontSize: "28px", fontWeight: 900, color: RED }}>R$ 5,00</span>
               </div>
 
               {pixQr ? (
