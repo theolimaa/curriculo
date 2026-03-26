@@ -406,8 +406,27 @@ export default function LandingPage() {
           </div>
         </section>
 
+      {/* CTA FINAL */}
+      <div style={{ height: "80px", background: `linear-gradient(to bottom, ${DARK}, ${RED})` }} />
+      <section style={{ background: RED, padding: "100px 40px", textAlign: "center" }}>
+        <div style={{ maxWidth: "700px", margin: "0 auto" }}>
+          <div style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.6)", marginBottom: "20px" }}>Promoção por tempo limitado</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "20px", marginBottom: "8px", flexWrap: "wrap" }}>
+            <span style={{ fontSize: "clamp(20px, 3vw, 30px)", color: "rgba(255,255,255,0.45)", textDecoration: "line-through", fontWeight: 700 }}>R$ 29,90</span>
+            <h2 style={{ fontSize: "clamp(52px, 8vw, 96px)", fontWeight: 900, color: "#fff", letterSpacing: "-3px", lineHeight: 1 }}>R$ 4,90</h2>
+          </div>
+          <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.75)", margin: "0 0 40px", lineHeight: 1.6 }}>Pagamento único via Pix.<br />Currículo profissional em 2 minutos.</p>
+          <button className="btn-inv" onClick={() => window.location.href = "/formulario"}>Gerar meu currículo agora</button>
+          <div style={{ marginTop: "24px", display: "flex", justifyContent: "center", gap: "32px", flexWrap: "wrap" }}>
+            {["Pagamento seguro via Pix", "Entrega imediata", "Funciona no celular"].map((t) => (
+              <span key={t} style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase" }}>{t}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
-      <div style={{ height: "80px", background: `linear-gradient(to bottom, ${DARK}, ${CREAM})` }} />
+      <div style={{ height: "80px", background: `linear-gradient(to bottom, ${RED}, ${CREAM})` }} />
       <section style={{ background: CREAM, padding: "80px 40px 100px" }}>
           <div style={{ maxWidth: "760px", margin: "0 auto" }}>
             <div style={{ display: "inline-block", border: `1.5px solid ${DARK}`, borderRadius: "2px", padding: "4px 12px", fontSize: "11px", fontWeight: 800, letterSpacing: "2px", textTransform: "uppercase", marginBottom: "20px" }}>Dúvidas frequentes</div>
@@ -427,24 +446,6 @@ export default function LandingPage() {
             ))}
           </div>
         </section>
-
-      {/* CTA FINAL */}
-      <section style={{ background: RED, padding: "100px 40px", textAlign: "center" }}>
-        <div style={{ maxWidth: "700px", margin: "0 auto" }}>
-          <div style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.6)", marginBottom: "20px" }}>Promoção por tempo limitado</div>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "20px", marginBottom: "8px", flexWrap: "wrap" }}>
-            <span style={{ fontSize: "clamp(20px, 3vw, 30px)", color: "rgba(255,255,255,0.45)", textDecoration: "line-through", fontWeight: 700 }}>R$ 29,90</span>
-            <h2 style={{ fontSize: "clamp(52px, 8vw, 96px)", fontWeight: 900, color: "#fff", letterSpacing: "-3px", lineHeight: 1 }}>R$ 4,90</h2>
-          </div>
-          <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.75)", margin: "0 0 40px", lineHeight: 1.6 }}>Pagamento único via Pix.<br />Currículo profissional em 2 minutos.</p>
-          <button className="btn-inv" onClick={() => window.location.href = "/formulario"}>Gerar meu currículo agora</button>
-          <div style={{ marginTop: "24px", display: "flex", justifyContent: "center", gap: "32px", flexWrap: "wrap" }}>
-            {["Pagamento seguro via Pix", "Entrega imediata", "Funciona no celular"].map((t) => (
-              <span key={t} style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)", fontWeight: 600, letterSpacing: "0.5px", textTransform: "uppercase" }}>{t}</span>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* RODAPÉ */}
       <footer style={{ background: DARK, padding: "28px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
