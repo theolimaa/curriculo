@@ -248,68 +248,110 @@ export default function LandingPage() {
                 <div style={{ background: RED, color: "#fff", borderRadius: "3px", padding: "4px 12px", fontSize: "11px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1px" }}>Depois</div>
                 <span style={{ fontSize: "13px", color: "#888", fontWeight: 600 }}>Currículo profissional — aprovado</span>
               </div>
-              <div style={{ background: "#fff", border: `2px solid ${DARK}`, borderRadius: "6px", padding: "24px", fontFamily: "Georgia, serif", boxShadow: `6px 6px 0 ${RED}`, position: "relative" }}>
 
-                {/* Cabeçalho profissional */}
-                <div style={{ borderBottom: `3px solid ${RED}`, paddingBottom: "14px", marginBottom: "14px" }}>
-                  <p style={{ fontSize: "17px", fontWeight: 700, color: DARK, margin: "0 0 4px", fontFamily: "Arial, sans-serif", letterSpacing: "-0.5px" }}>João da Silva</p>
-                  <p style={{ fontSize: "10px", color: "#666", margin: "0 0 2px", fontFamily: "Arial, sans-serif" }}>joao.silva@gmail.com · (11) 98765-4321 · São Paulo — SP</p>
-                </div>
+              {/* CV com design moderno de duas colunas */}
+              <div style={{ boxShadow: `6px 6px 0 ${RED}`, border: `2px solid ${DARK}`, borderRadius: "6px", overflow: "hidden", position: "relative" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "38% 62%" }}>
 
-                {/* Objetivo profissional */}
-                <div style={{ marginBottom: "12px" }}>
-                  <p style={{ fontSize: "9px", fontWeight: 700, color: RED, margin: "0 0 5px", textTransform: "uppercase", letterSpacing: "1.5px", fontFamily: "Arial, sans-serif" }}>Objetivo Profissional</p>
-                  <p style={{ fontSize: "9px", color: "#444", lineHeight: 1.6, fontFamily: "Arial, sans-serif" }}>
-                    Profissional de vendas e atendimento com 3 anos de experiência no varejo. Busca oportunidade para aplicar habilidades em relacionamento com clientes e gestão de ponto de venda em empresa de médio ou grande porte.
-                  </p>
-                </div>
-
-                {/* Experiência */}
-                <div style={{ marginBottom: "12px" }}>
-                  <p style={{ fontSize: "9px", fontWeight: 700, color: RED, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: "1.5px", fontFamily: "Arial, sans-serif" }}>Experiência Profissional</p>
-                  <div style={{ marginBottom: "8px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "3px" }}>
-                      <p style={{ fontSize: "10px", fontWeight: 700, color: DARK, margin: 0, fontFamily: "Arial, sans-serif" }}>Vendedor · Mercado Bom Preço</p>
-                      <p style={{ fontSize: "9px", color: "#999", margin: 0, fontFamily: "Arial, sans-serif" }}>Jan/2019 — Dez/2022</p>
+                  {/* Coluna esquerda — escura */}
+                  <div style={{ background: DARK, padding: "20px 16px" }}>
+                    {/* Avatar inicial */}
+                    <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: RED, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "12px" }}>
+                      <span style={{ color: "#fff", fontSize: "18px", fontWeight: 900, fontFamily: "Arial, sans-serif" }}>J</span>
                     </div>
-                    <p style={{ fontSize: "9px", color: "#555", lineHeight: 1.6, fontFamily: "Arial, sans-serif" }}>
-                      Responsável pelo atendimento ao cliente, controle de estoque e reposição de mercadorias. Participação em inventários mensais e treinamento de novos colaboradores.
-                    </p>
-                  </div>
-                  <div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "3px" }}>
-                      <p style={{ fontSize: "10px", fontWeight: 700, color: DARK, margin: 0, fontFamily: "Arial, sans-serif" }}>Operador de Caixa · Padaria São José</p>
-                      <p style={{ fontSize: "9px", color: "#999", margin: 0, fontFamily: "Arial, sans-serif" }}>Mar/2018 — Dez/2018</p>
+                    <p style={{ fontSize: "13px", fontWeight: 900, color: "#fff", margin: "0 0 2px", fontFamily: "Arial, sans-serif", letterSpacing: "-0.3px", lineHeight: 1.2 }}>João<br/>da Silva</p>
+                    <p style={{ fontSize: "8px", color: RED, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", margin: "6px 0 16px" }}>Vendas · Varejo</p>
+
+                    {/* Contato */}
+                    <div style={{ marginBottom: "16px" }}>
+                      <p style={{ fontSize: "8px", fontWeight: 800, color: "#555", textTransform: "uppercase", letterSpacing: "1.5px", margin: "0 0 8px", fontFamily: "Arial, sans-serif" }}>Contato</p>
+                      {[
+                        { icon: "✉", text: "joao.silva@gmail.com" },
+                        { icon: "☎", text: "(11) 98765-4321" },
+                        { icon: "⊙", text: "São Paulo — SP" },
+                      ].map((c) => (
+                        <div key={c.text} style={{ display: "flex", gap: "6px", alignItems: "flex-start", marginBottom: "5px" }}>
+                          <span style={{ fontSize: "8px", color: RED, marginTop: "1px" }}>{c.icon}</span>
+                          <p style={{ fontSize: "8px", color: "#aaa", margin: 0, fontFamily: "Arial, sans-serif", lineHeight: 1.4 }}>{c.text}</p>
+                        </div>
+                      ))}
                     </div>
-                    <p style={{ fontSize: "9px", color: "#555", lineHeight: 1.6, fontFamily: "Arial, sans-serif" }}>
-                      Operação de caixa registradora, controle de pagamentos em dinheiro, cartão e Pix, fechamento de caixa diário.
-                    </p>
+
+                    {/* Habilidades */}
+                    <div style={{ marginBottom: "16px" }}>
+                      <p style={{ fontSize: "8px", fontWeight: 800, color: "#555", textTransform: "uppercase", letterSpacing: "1.5px", margin: "0 0 8px", fontFamily: "Arial, sans-serif" }}>Habilidades</p>
+                      {["Atendimento ao cliente", "Controle de estoque", "Pacote Office", "Trabalho em equipe", "Comunicação"].map((h) => (
+                        <div key={h} style={{ marginBottom: "5px" }}>
+                          <p style={{ fontSize: "8px", color: "#ccc", margin: "0 0 2px", fontFamily: "Arial, sans-serif" }}>{h}</p>
+                          <div style={{ height: "3px", background: "#333", borderRadius: "2px" }}>
+                            <div style={{ height: "3px", background: RED, borderRadius: "2px", width: `${Math.floor(Math.random() * 30) + 65}%` }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Formação */}
+                    <div>
+                      <p style={{ fontSize: "8px", fontWeight: 800, color: "#555", textTransform: "uppercase", letterSpacing: "1.5px", margin: "0 0 8px", fontFamily: "Arial, sans-serif" }}>Formação</p>
+                      <p style={{ fontSize: "8px", fontWeight: 700, color: "#fff", margin: "0 0 2px", fontFamily: "Arial, sans-serif" }}>Ensino Médio Completo</p>
+                      <p style={{ fontSize: "7px", color: "#888", margin: "0 0 1px", fontFamily: "Arial, sans-serif" }}>EE Prof. Álvaro Guião</p>
+                      <p style={{ fontSize: "7px", color: RED, fontWeight: 700, fontFamily: "Arial, sans-serif" }}>2017</p>
+                    </div>
                   </div>
+
+                  {/* Coluna direita — clara */}
+                  <div style={{ background: "#fff", padding: "20px 16px" }}>
+
+                    {/* Objetivo */}
+                    <div style={{ marginBottom: "14px", paddingBottom: "14px", borderBottom: "1px solid #f0ebe5" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
+                        <div style={{ width: "16px", height: "2px", background: RED }} />
+                        <p style={{ fontSize: "8px", fontWeight: 800, color: DARK, textTransform: "uppercase", letterSpacing: "1.5px", margin: 0, fontFamily: "Arial, sans-serif" }}>Objetivo</p>
+                      </div>
+                      <p style={{ fontSize: "8px", color: "#555", lineHeight: 1.6, margin: 0, fontFamily: "Arial, sans-serif" }}>
+                        Profissional de vendas com 4 anos de experiência no varejo. Busca posição para aplicar expertise em atendimento ao cliente e gestão de ponto de venda em empresa de médio ou grande porte.
+                      </p>
+                    </div>
+
+                    {/* Experiências */}
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "10px" }}>
+                        <div style={{ width: "16px", height: "2px", background: RED }} />
+                        <p style={{ fontSize: "8px", fontWeight: 800, color: DARK, textTransform: "uppercase", letterSpacing: "1.5px", margin: 0, fontFamily: "Arial, sans-serif" }}>Experiência</p>
+                      </div>
+
+                      {[
+                        {
+                          cargo: "Vendedor",
+                          empresa: "Mercado Bom Preço",
+                          periodo: "Jan/2019 — Dez/2022",
+                          desc: "Atendimento ao cliente, controle de estoque e reposição. Treinamento de novos colaboradores e participação em inventários mensais."
+                        },
+                        {
+                          cargo: "Operador de Caixa",
+                          empresa: "Padaria São José",
+                          periodo: "Mar/2018 — Dez/2018",
+                          desc: "Operação de caixa, controle de pagamentos em dinheiro, cartão e Pix. Fechamento e conciliação de caixa diário."
+                        }
+                      ].map((exp, i) => (
+                        <div key={i} style={{ marginBottom: "10px", paddingLeft: "8px", borderLeft: `2px solid ${i === 0 ? RED : "#ddd"}` }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "2px" }}>
+                            <p style={{ fontSize: "9px", fontWeight: 800, color: DARK, margin: 0, fontFamily: "Arial, sans-serif" }}>{exp.cargo}</p>
+                            <p style={{ fontSize: "7px", color: "#bbb", margin: 0, fontFamily: "Arial, sans-serif", whiteSpace: "nowrap" }}>{exp.periodo}</p>
+                          </div>
+                          <p style={{ fontSize: "8px", color: RED, fontWeight: 700, margin: "0 0 3px", fontFamily: "Arial, sans-serif" }}>{exp.empresa}</p>
+                          <p style={{ fontSize: "7.5px", color: "#777", lineHeight: 1.5, margin: 0, fontFamily: "Arial, sans-serif" }}>{exp.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                 </div>
 
-                {/* Formação */}
-                <div style={{ marginBottom: "12px" }}>
-                  <p style={{ fontSize: "9px", fontWeight: 700, color: RED, margin: "0 0 5px", textTransform: "uppercase", letterSpacing: "1.5px", fontFamily: "Arial, sans-serif" }}>Formação Acadêmica</p>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <p style={{ fontSize: "9px", color: DARK, margin: 0, fontFamily: "Arial, sans-serif" }}>Ensino Médio Completo · EE Professor Álvaro Guião</p>
-                    <p style={{ fontSize: "9px", color: "#999", margin: 0, fontFamily: "Arial, sans-serif" }}>2017</p>
-                  </div>
-                </div>
-
-                {/* Habilidades */}
-                <div>
-                  <p style={{ fontSize: "9px", fontWeight: 700, color: RED, margin: "0 0 6px", textTransform: "uppercase", letterSpacing: "1.5px", fontFamily: "Arial, sans-serif" }}>Habilidades</p>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
-                    {["Pacote Office", "Atendimento ao cliente", "Controle de estoque", "Trabalho em equipe", "Comunicação"].map((h) => (
-                      <span key={h} style={{ background: "#f5f0eb", border: `1px solid #ddd`, borderRadius: "2px", padding: "2px 7px", fontSize: "8px", color: "#555", fontWeight: 600, fontFamily: "Arial, sans-serif" }}>{h}</span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Selos */}
-                <div style={{ marginTop: "16px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                  {["Formatação profissional", "Objetivo direto", "Datas precisas", "Linguagem de mercado"].map((p) => (
-                    <span key={p} style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: "2px", padding: "2px 8px", fontSize: "9px", color: "#16a34a", fontWeight: 700 }}>{p}</span>
+                {/* Selos de aprovação */}
+                <div style={{ background: "#f8f8f8", borderTop: "1px solid #eee", padding: "8px 16px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                  {["Design moderno", "Duas colunas", "Linguagem profissional", "Datas precisas"].map((p) => (
+                    <span key={p} style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: "2px", padding: "2px 8px", fontSize: "8px", color: "#16a34a", fontWeight: 700 }}>{p}</span>
                   ))}
                 </div>
               </div>
