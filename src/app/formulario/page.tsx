@@ -13,7 +13,7 @@ type Step = "form" | "payment" | "loading" | "edit" | "download";
 const emptyForm: FormData = {
   nome: "", telefone: "", email: "", cidade: "", objetivo: "",
   experiencias: [{ empresa: "", cargo: "", periodo: "", descricao: "" }],
-  formacao: [{ instituicao: "", curso: "", ano: "" }],
+  formacao: [{ instituicao: "", curso: "", grau: "", periodoInicio: "", periodoFim: "", presente: false, descricao: "" }],
   habilidades: [{ nome: "", nivel: "intermediario" as "basico" | "intermediario" | "avancado" }],
   estilo: "vermelho" as "vermelho" | "azul" | "verde" | "preto",
 };
@@ -27,6 +27,7 @@ export default function Formulario() {
   const [semExperiencia, setSemExperiencia] = useState(false);
   const [cropModal, setCropModal] = useState(false);
   const [cropOffset, setCropOffset] = useState({ x: 50, y: 50 });
+  const [cropZoom, setCropZoom] = useState(100);
   const [error, setError] = useState("");
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -173,7 +174,7 @@ export default function Formulario() {
                 <p style={{ fontSize: "12px", fontWeight: 800, color: "#555", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "1px" }}>Foto (opcional)</p>
                 <label style={{ cursor: "pointer", display: "block" }}>
                   <div style={{ width: "80px", height: "80px", borderRadius: "50%", border: `2px dashed ${formData.foto ? RED : "#ccc"}`, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: formData.foto ? "transparent" : "#fafafa" }}>
-                    {formData.foto ? <img src={formData.foto} alt="Foto" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: `${cropOffset.x}% ${cropOffset.y}%` }} /> : (
+                    {formData.foto ? <img src={formData.foto} alt="Foto" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: `${cropOffset.x}% ${cropOffset.y}%`, transform: `scale(${cropZoom/100})`, transformOrigin: `${cropOffset.x}% ${cropOffset.y}%` }} /> : (
                       <div style={{ textAlign: "center" }}><div style={{ fontSize: "20px", marginBottom: "2px" }}>📷</div><div style={{ fontSize: "9px", color: "#aaa", fontWeight: 700, textTransform: "uppercase" }}>Enviar</div></div>
                     )}
                   </div>
@@ -253,13 +254,27 @@ export default function Formulario() {
                     ))}
                   </div>
                 </div>
+                <Field label="Escola / Faculdade" value={f.instituicao} onChange={(v) => { const fm = [...formData.formacao]; fm[i].instituicao = v; setFormData({ ...formData, formacao: fm }); }} placeholder="Nome da instituição" />
+                <Field label="Curso" value={(f as any).grau2 || ""} onChange={(v) => { const fm = [...formData.formacao]; (fm[i] as any).grau2 = v; setFormData({ ...formData, formacao: fm }); }} placeholder="Ex: Administração, Informática, Letras..." />
                 <div className="grid-2">
-                  <Field label="Escola / Faculdade" value={f.instituicao} onChange={(v) => { const fm = [...formData.formacao]; fm[i].instituicao = v; setFormData({ ...formData, formacao: fm }); }} placeholder="Nome da instituição" />
-                  <Field label="Ano de conclusão" value={f.ano} onChange={(v) => { const fm = [...formData.formacao]; fm[i].ano = v; setFormData({ ...formData, formacao: fm }); }} placeholder="2024 (ou em andamento)" />
+                  <Field label="Início" value={(f as any).periodoInicio || ""} onChange={(v) => { const fm = [...formData.formacao]; (fm[i] as any).periodoInicio = v; setFormData({ ...formData, formacao: fm }); }} placeholder="2020" />
+                  <div>
+                    <p style={{ fontSize: "12px", fontWeight: 800, color: "#555", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "1px" }}>Conclusão</p>
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                      <div className="field" style={{ flex: 1, margin: 0, opacity: (f as any).presente ? 0.4 : 1 }}>
+                        <input value={(f as any).presente ? "" : ((f as any).periodoFim || "")} disabled={(f as any).presente} onChange={(e) => { const fm = [...formData.formacao]; (fm[i] as any).periodoFim = e.target.value; setFormData({ ...formData, formacao: fm }); }} placeholder="2024" />
+                      </div>
+                      <label style={{ display: "flex", alignItems: "center", gap: "5px", cursor: "pointer", whiteSpace: "nowrap", fontSize: "12px", color: "#888", fontWeight: 700 }}>
+                        <input type="checkbox" checked={(f as any).presente || false} onChange={(e) => { const fm = [...formData.formacao]; (fm[i] as any).presente = e.target.checked; setFormData({ ...formData, formacao: fm }); }} style={{ accentColor: RED, width: "14px", height: "14px" }} />
+                        Presente
+                      </label>
+                    </div>
+                  </div>
                 </div>
+                <FieldArea label="Atividades / descrição (opcional)" value={(f as any).descricao || ""} onChange={(v) => { const fm = [...formData.formacao]; (fm[i] as any).descricao = v; setFormData({ ...formData, formacao: fm }); }} placeholder="Ex: Cursando, principais disciplinas, projetos..." />
               </div>
             ))}
-            <button className="btn-ghost" onClick={() => setFormData({ ...formData, formacao: [...formData.formacao, { instituicao: "", curso: "", ano: "" }] })} style={{ marginBottom: "8px" }}>+ Adicionar formação</button>
+            <button className="btn-ghost" onClick={() => setFormData({ ...formData, formacao: [...formData.formacao, { instituicao: "", curso: "", grau: "", periodoInicio: "", periodoFim: "", presente: false, descricao: "" }] })} style={{ marginBottom: "8px" }}>+ Adicionar formação</button>
 
             <div style={{ height: "1.5px", background: "#e0dbd4", margin: "16px 0 28px" }} />
             <SectionLabel>Habilidades</SectionLabel>
@@ -449,16 +464,21 @@ export default function Formulario() {
           <div style={{ background: "#fff", borderRadius: "8px", padding: "24px", width: "100%", maxWidth: "360px" }}>
             <h3 style={{ fontSize: "16px", fontWeight: 900, margin: "0 0 16px", color: DARK }}>Ajustar enquadramento</h3>
             <div style={{ width: "120px", height: "120px", borderRadius: "50%", overflow: "hidden", margin: "0 auto 20px", border: `3px solid ${RED}` }}>
-              <img src={formData.foto} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: `${cropOffset.x}% ${cropOffset.y}%` }} />
+              <img src={formData.foto} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: `${cropOffset.x}% ${cropOffset.y}%`, transform: `scale(${cropZoom/100})`, transformOrigin: `${cropOffset.x}% ${cropOffset.y}%` }} />
             </div>
             <div style={{ marginBottom: "14px" }}>
               <p style={{ fontSize: "11px", fontWeight: 800, color: "#555", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>Horizontal</p>
               <input type="range" min="0" max="100" value={cropOffset.x} onChange={(e) => setCropOffset({ ...cropOffset, x: Number(e.target.value) })}
                 style={{ width: "100%", accentColor: RED }} />
             </div>
-            <div style={{ marginBottom: "20px" }}>
+            <div style={{ marginBottom: "14px" }}>
               <p style={{ fontSize: "11px", fontWeight: 800, color: "#555", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>Vertical</p>
               <input type="range" min="0" max="100" value={cropOffset.y} onChange={(e) => setCropOffset({ ...cropOffset, y: Number(e.target.value) })}
+                style={{ width: "100%", accentColor: RED }} />
+            </div>
+            <div style={{ marginBottom: "20px" }}>
+              <p style={{ fontSize: "11px", fontWeight: 800, color: "#555", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>Zoom ({cropZoom}%)</p>
+              <input type="range" min="80" max="200" value={cropZoom} onChange={(e) => setCropZoom(Number(e.target.value))}
                 style={{ width: "100%", accentColor: RED }} />
             </div>
             <button className="btn-main" onClick={() => setCropModal(false)}>Confirmar</button>
