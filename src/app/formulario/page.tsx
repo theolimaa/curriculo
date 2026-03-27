@@ -57,7 +57,7 @@ export default function Formulario() {
       const res = await fetch("/api/generate-cv", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: id }) });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      setCvData({ ...data.cvData, foto: formData.foto });
+      setCvData({ ...data.cvData, foto: formData.foto, estilo: formData.estilo });
       setStep("edit");
     } catch { setError("Erro ao gerar currículo. Entre em contato."); setStep("payment"); }
   };
@@ -71,7 +71,7 @@ export default function Formulario() {
       const res2 = await fetch("/api/generate-cv", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: data.sessionId }) });
       const data2 = await res2.json();
       if (data2.error) throw new Error(data2.error);
-      setCvData({ ...data2.cvData, foto: formData.foto });
+      setCvData({ ...data2.cvData, foto: formData.foto, estilo: formData.estilo });
       setStep("edit");
     } catch { setError("Erro no teste."); setStep("form"); }
   };
