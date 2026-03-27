@@ -45,7 +45,9 @@ export function generatePDF(cv: CVData): void {
   doc.setFont("helvetica", "bold");
   doc.text(primeiro.toUpperCase(), 14, 28);
 
-  doc.setTextColor(r, g, b);
+  // Sobrenome: usa cor de destaque, mas no tema preto usa branco para contraste
+  const [sr, sg, sb] = (cv.estilo === "preto") ? [200, 200, 200] : [r, g, b];
+  doc.setTextColor(sr, sg, sb);
   doc.setFontSize(24);
   doc.text(sobrenome.toUpperCase(), 14, 40);
 
