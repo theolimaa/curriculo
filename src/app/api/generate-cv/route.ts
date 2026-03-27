@@ -68,7 +68,7 @@ Formato de retorno:
       objetivo: f.objetivo || `Profissional com experiência na área, buscando oportunidade de crescimento e desenvolvimento em empresa de destaque no mercado.`,
       experiencias: (f.experiencias || []).filter((e: any) => e.empresa),
       formacao: (f.formacao || []).filter((fm: any) => fm.curso),
-      habilidades: f.habilidades || "",
+      habilidades: Array.isArray(f.habilidades) ? f.habilidades.filter((h: any) => h.nome) : (f.habilidades ? [{ nome: f.habilidades, nivel: "intermediario" }] : []),
     };
 
     return NextResponse.json({ cvData });
