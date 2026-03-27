@@ -11,6 +11,11 @@ export interface Formacao {
   ano: string;
 }
 
+export interface Habilidade {
+  nome: string;
+  nivel: "basico" | "intermediario" | "avancado";
+}
+
 export interface FormData {
   nome: string;
   telefone: string;
@@ -19,7 +24,7 @@ export interface FormData {
   objetivo: string;
   experiencias: Experiencia[];
   formacao: Formacao[];
-  habilidades: string;
+  habilidades: Habilidade[];
   foto?: string;
   estilo?: "vermelho" | "azul" | "verde" | "preto";
 }
