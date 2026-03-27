@@ -147,7 +147,7 @@ export default function Formulario() {
                 <Field label="WhatsApp / Telefone *" value={formData.telefone} onChange={(v) => setFormData({ ...formData, telefone: v })} placeholder="(11) 99999-9999" />
               </div>
             </div>
-            <div style={{ display: "", TemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
               <Field label="E-mail" value={formData.email} onChange={(v) => setFormData({ ...formData, email: v })} placeholder="email@gmail.com" />
               <Field label="Cidade / Estado" value={formData.cidade} onChange={(v) => setFormData({ ...formData, cidade: v })} placeholder="São Paulo - SP" />
             </div>
