@@ -46,6 +46,13 @@ export default function LandingPage() {
           .cv-compare-grid { grid-template-columns: 1fr !important; }
           .cv-arrow { display: none !important; }
           .cv-compare-grid > div:nth-child(2) { display: none; }
+          .hero-grid, .problem-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+          .steps-grid { grid-template-columns: 1fr 1fr !important; }
+          .cards-grid { grid-template-columns: 1fr !important; }
+          .testimonials-grid { grid-template-columns: 1fr !important; }
+          .stats-grid { grid-template-columns: 1fr !important; }
+          section { padding-left: 20px !important; padding-right: 20px !important; }
+          nav { padding: 14px 16px !important; }
         }
         .card-white { background: #fff; border: 1.5px solid #e0dbd4; padding: 32px 28px; transition: all 0.25s ease; }
         .card-white:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); border-color: ${RED}; }
