@@ -14,7 +14,7 @@ const emptyForm: FormData = {
   nome: "", telefone: "", email: "", cidade: "", objetivo: "",
   experiencias: [{ empresa: "", cargo: "", periodo: "", descricao: "" }],
   formacao: [{ instituicao: "", curso: "", ano: "" }],
-  habilidades: "",
+  habilidades: [{ nome: "", nivel: "intermediario" as "basico" | "intermediario" | "avancado" }],
   estilo: "vermelho" as "vermelho" | "azul" | "verde" | "preto",
 };
 
@@ -198,7 +198,25 @@ export default function Formulario() {
 
             <div style={{ height: "1.5px", background: "#e0dbd4", margin: "16px 0 28px" }} />
             <SectionLabel>Habilidades</SectionLabel>
-            <FieldArea label="Liste suas habilidades" value={formData.habilidades} onChange={(v) => setFormData({ ...formData, habilidades: v })} placeholder="Pacote Office, Atendimento ao cliente, CNH B..." />
+            <p style={{ fontSize: "13px", color: "#888", marginBottom: "14px" }}>Adicione suas habilidades e escolha o nível de cada uma.</p>
+            {formData.habilidades.map((hab, i) => (
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "10px", marginBottom: "10px", alignItems: "center" }}>
+                <div className="field" style={{ margin: 0 }}>
+                  <input value={hab.nome} onChange={(e) => { const h = [...formData.habilidades]; h[i].nome = e.target.value; setFormData({ ...formData, habilidades: h }); }} placeholder={`Ex: Pacote Office, Excel, Atendimento...`} />
+                </div>
+                <div style={{ display: "flex", gap: "4px" }}>
+                  {(["basico","intermediario","avancado"] as const).map((n) => (
+                    <button key={n} type="button" onClick={() => { const h = [...formData.habilidades]; h[i].nivel = n; setFormData({ ...formData, habilidades: h }); }}
+                      style={{ padding: "8px 10px", border: `1.5px solid ${hab.nivel === n ? "#d0290a" : "#ddd"}`, borderRadius: "4px", background: hab.nivel === n ? "#d0290a" : "#fff", color: hab.nivel === n ? "#fff" : "#aaa", fontSize: "10px", fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s", whiteSpace: "nowrap" }}>
+                      {n === "basico" ? "Básico" : n === "intermediario" ? "Médio" : "Avançado"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <button className="btn-ghost" onClick={() => setFormData({ ...formData, habilidades: [...formData.habilidades, { nome: "", nivel: "intermediario" as const }] })} style={{ marginBottom: "8px" }}>
+              + Adicionar habilidade
+            </button>
 
 
 
