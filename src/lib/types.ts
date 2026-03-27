@@ -8,7 +8,13 @@ export interface Experiencia {
 export interface Formacao {
   instituicao: string;
   curso: string;
-  ano: string;
+  grau?: string;
+  grau2?: string;
+  periodoInicio?: string;
+  periodoFim?: string;
+  presente?: boolean;
+  descricao?: string;
+  ano?: string;
 }
 
 export interface Habilidade {
