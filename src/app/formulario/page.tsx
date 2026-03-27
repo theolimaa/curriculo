@@ -316,7 +316,21 @@ export default function Formulario() {
             </>)}
             <div style={{ height: "1.5px", background: "#e0dbd4", margin: "24px 0" }} />
             <SectionLabel>Habilidades</SectionLabel>
-            <FieldArea label="Habilidades" value={cvData.habilidades} onChange={(v) => setCvData({ ...cvData, habilidades: v })} />
+            {(cvData.habilidades as any[]).map((hab: any, i: number) => (
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "10px", marginBottom: "10px", alignItems: "center" }}>
+                <div className="field" style={{ margin: 0 }}>
+                  <input value={hab.nome} onChange={(e) => { const h = [...(cvData.habilidades as any[])]; h[i].nome = e.target.value; setCvData({ ...cvData, habilidades: h }); }} placeholder="Nome da habilidade" />
+                </div>
+                <div style={{ display: "flex", gap: "4px" }}>
+                  {(["basico","intermediario","avancado"] as const).map((n) => (
+                    <button key={n} type="button" onClick={() => { const h = [...(cvData.habilidades as any[])]; h[i].nivel = n; setCvData({ ...cvData, habilidades: h }); }}
+                      style={{ padding: "8px 10px", border: `1.5px solid ${hab.nivel === n ? "#d0290a" : "#ddd"}`, borderRadius: "4px", background: hab.nivel === n ? "#d0290a" : "#fff", color: hab.nivel === n ? "#fff" : "#aaa", fontSize: "10px", fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s", whiteSpace: "nowrap" }}>
+                      {n === "basico" ? "Básico" : n === "intermediario" ? "Médio" : "Avançado"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
 
             <div style={{ height: "1.5px", background: "#e0dbd4", margin: "24px 0" }} />
             <SectionLabel>Estilo do Currículo</SectionLabel>
