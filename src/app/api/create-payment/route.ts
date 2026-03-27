@@ -1,43 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { MercadoPagoConfig, Payment } from "mercadopago";
 import { savePayment } from "@/lib/storage";
-
-const client = new MercadoPagoConfig({
-  accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN!,
-});
+import { randomUUID } from "crypto";
 
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.json();
+    const sessionId = randomUUID();
+    savePayment(sessionId, formData);
 
-    const payment = new Payment(client);
+    const baseUrl = process.env.KIWIFY_CHECKOUT_URL || "https://pay.kiwify.com.br/ozv3KzP";
+    const checkoutUrl = `${baseUrl}?passthrough=${sessionId}`;
 
-    const result = await payment.create({
-      body: {
-        transaction_amount: 4.9,
-        description: "Currículo Profissional com IA",
-        payment_method_id: "pix",
-        payer: {
-          email: formData.email || "cliente@curriculo-ia.com",
-          first_name: formData.nome?.split(" ")[0] || "Cliente",
-          last_name: formData.nome?.split(" ").slice(1).join(" ") || "",
-        },
-        notification_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhook`,
-      },
-    });
-
-    const paymentId = String(result.id);
-    const pixData = result.point_of_interaction?.transaction_data;
-
-    savePayment(paymentId, formData);
-
-    return NextResponse.json({
-      paymentId,
-      pixQrCode: pixData?.qr_code_base64,
-      pixCopyPaste: pixData?.qr_code,
-    });
-  } catch (error: any) {
-    console.error("Erro ao criar pagamento:", error);
-    return NextResponse.json({ error: "Erro ao criar pagamento" }, { status: 500 });
+    return NextResponse.json({ sessionId, checkoutUrl });
+  } catch (error) {
+    console.error("Erro ao criar sessão:", error);
+    return NextResponse.json({ error: "Erro ao criar sessão" }, { status: 500 });
   }
 }
