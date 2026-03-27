@@ -4,11 +4,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Currículo Pro — Currículo Profissional em 2 Minutos por R$ 5,00",
   description: "Monte seu currículo profissional validado por especialistas em RH. Método testado, resultado imediato. Por apenas R$ 5,00 via Pix.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://curriculo-ia.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://curriculoprofissional.vercel.app"),
   openGraph: {
     title: "Currículo Pro — Profissional em 2 Minutos por R$ 5,00",
     description: "Monte seu currículo profissional validado por especialistas em RH. Método testado, resultado imediato. Por apenas R$ 5,00 via Pix.",
-    url: process.env.NEXT_PUBLIC_APP_URL || "https://curriculo-ia.vercel.app",
+    url: process.env.NEXT_PUBLIC_APP_URL || "https://curriculoprofissional.vercel.app",
     siteName: "Currículo Pro",
     images: [
       {
