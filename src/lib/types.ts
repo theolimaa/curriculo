@@ -26,6 +26,7 @@ export interface FormData {
   formacao: Formacao[];
   habilidades: Habilidade[];
   foto?: string;
+  fotoOffset?: { x: number; y: number };
   estilo?: "vermelho" | "azul" | "verde" | "preto";
 }
 
