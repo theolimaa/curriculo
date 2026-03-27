@@ -116,15 +116,35 @@ export default function Formulario() {
         .btn-test:hover { background: #f59e0b; color: #fff; }
         .upsell-btn { width: 100%; padding: 14px; background: #f59e0b; border: none; border-radius: 4px; color: #fff; font-weight: 900; cursor: pointer; font-size: 15px; font-family: 'Barlow', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; }
         .upsell-btn:hover { background: #d97706; transform: translateY(-1px); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 80px; gap: 12px; }
+        .hab-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; margin-bottom: 10px; }
+        .hab-nivels { display: flex; gap: 4px; }
+        .foto-row { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 12px; }
+        .foto-fields { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .step-nav { display: flex; gap: 6px; align-items: center; }
+        .step-label { display: inline; }
+        @media (max-width: 600px) {
+          .grid-2 { grid-template-columns: 1fr !important; }
+          .grid-3 { grid-template-columns: 1fr 1fr !important; }
+          .grid-3 .ano-field { grid-column: span 2; }
+          .hab-row { grid-template-columns: 1fr !important; }
+          .hab-nivels { justify-content: stretch; }
+          .hab-nivels button { flex: 1; }
+          .foto-row { flex-direction: column; align-items: center; }
+          .foto-fields { width: 100%; }
+          .step-label { display: none !important; }
+          .step-nav { gap: 4px; }
+        }
       `}</style>
 
-      <nav style={{ background: CREAM, padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1.5px solid ${DARK}` }}>
+      <nav style={{ background: CREAM, padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1.5px solid ${DARK}` }}>
         <a href="/" style={{ textDecoration: "none" }}><Logo /></a>
         <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
           {stepLabels.map((label, i) => (
             <div key={label} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <div style={{ width: "26px", height: "26px", borderRadius: "50%", background: stepIndex >= i ? RED : "#ddd", color: stepIndex >= i ? "#fff" : "#999", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: 800, transition: "all 0.3s" }}>{i + 1}</div>
-              <span style={{ color: stepIndex >= i ? DARK : "#aaa", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</span>
+              <span className="step-label" style={{ color: stepIndex >= i ? DARK : "#aaa" }}>{label}</span>
               {i < 3 && <div style={{ width: "20px", height: "1.5px", background: "#ddd" }} />}
             </div>
           ))}
@@ -145,7 +165,7 @@ export default function Formulario() {
             <p style={{ color: "#888", fontSize: "15px", margin: "0 0 36px" }}>Preencha abaixo — nosso método monta tudo para você.</p>
 
             <SectionLabel>Informações Pessoais</SectionLabel>
-            <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", marginBottom: "12px" }}>
+            <div className="foto-row">
               <div style={{ flexShrink: 0 }}>
                 <p style={{ fontSize: "12px", fontWeight: 800, color: "#555", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "1px" }}>Foto (opcional)</p>
                 <label style={{ cursor: "pointer", display: "block" }}>
@@ -158,12 +178,12 @@ export default function Formulario() {
                 </label>
                 {formData.foto && <button onClick={() => setFormData({ ...formData, foto: undefined })} style={{ marginTop: "6px", width: "80px", background: "transparent", border: "none", color: "#aaa", fontSize: "11px", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, textTransform: "uppercase" }}>Remover</button>}
               </div>
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div className="foto-fields">
                 <Field label="Nome completo *" value={formData.nome} onChange={(v) => setFormData({ ...formData, nome: v })} placeholder="Ex: Maria Silva" />
                 <Field label="WhatsApp / Telefone *" value={formData.telefone} onChange={(v) => setFormData({ ...formData, telefone: v })} placeholder="(11) 99999-9999" />
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+            <div className="grid-2">
               <Field label="E-mail" value={formData.email} onChange={(v) => setFormData({ ...formData, email: v })} placeholder="email@gmail.com" />
               <Field label="Cidade / Estado" value={formData.cidade} onChange={(v) => setFormData({ ...formData, cidade: v })} placeholder="São Paulo - SP" />
             </div>
@@ -174,7 +194,7 @@ export default function Formulario() {
             {formData.experiencias.map((exp, i) => (
               <div key={i} style={{ background: "#fff", border: "1.5px solid #e0dbd4", borderRadius: "4px", padding: "20px", marginBottom: "12px", borderLeft: `3px solid ${RED}` }}>
                 <p style={{ fontSize: "11px", fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "14px" }}>Experiência {i + 1}</p>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+                <div className="grid-2" style={{ marginBottom: "12px" }}>
                   <Field label="Empresa" value={exp.empresa} onChange={(v) => { const e = [...formData.experiencias]; e[i].empresa = v; setFormData({ ...formData, experiencias: e }); }} placeholder="Nome da empresa" />
                   <Field label="Cargo" value={exp.cargo} onChange={(v) => { const e = [...formData.experiencias]; e[i].cargo = v; setFormData({ ...formData, experiencias: e }); }} placeholder="Ex: Vendedor, Auxiliar..." />
                 </div>
@@ -188,7 +208,7 @@ export default function Formulario() {
             <SectionLabel>Formação Escolar</SectionLabel>
             {formData.formacao.map((f, i) => (
               <div key={i} style={{ background: "#fff", border: "1.5px solid #e0dbd4", borderRadius: "4px", padding: "20px", marginBottom: "12px", borderLeft: `3px solid ${DARK}` }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 80px", gap: "12px" }}>
+                <div className="grid-3">
                   <Field label="Escola / Faculdade" value={f.instituicao} onChange={(v) => { const fm = [...formData.formacao]; fm[i].instituicao = v; setFormData({ ...formData, formacao: fm }); }} placeholder="Nome da instituição" />
                   <Field label="Curso / Nível" value={f.curso} onChange={(v) => { const fm = [...formData.formacao]; fm[i].curso = v; setFormData({ ...formData, formacao: fm }); }} placeholder="Ensino Médio..." />
                   <Field label="Ano" value={f.ano} onChange={(v) => { const fm = [...formData.formacao]; fm[i].ano = v; setFormData({ ...formData, formacao: fm }); }} placeholder="2020" />
@@ -200,11 +220,11 @@ export default function Formulario() {
             <SectionLabel>Habilidades</SectionLabel>
             <p style={{ fontSize: "13px", color: "#888", marginBottom: "14px" }}>Adicione suas habilidades e escolha o nível de cada uma.</p>
             {formData.habilidades.map((hab, i) => (
-              <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "10px", marginBottom: "10px", alignItems: "center" }}>
+              <div key={i} className="hab-row">
                 <div className="field" style={{ margin: 0 }}>
                   <input value={hab.nome} onChange={(e) => { const h = [...formData.habilidades]; h[i].nome = e.target.value; setFormData({ ...formData, habilidades: h }); }} placeholder={`Ex: Pacote Office, Excel, Atendimento...`} />
                 </div>
-                <div style={{ display: "flex", gap: "4px" }}>
+                <div className="hab-nivels">
                   {(["basico","intermediario","avancado"] as const).map((n) => (
                     <button key={n} type="button" onClick={() => { const h = [...formData.habilidades]; h[i].nivel = n; setFormData({ ...formData, habilidades: h }); }}
                       style={{ padding: "8px 10px", border: `1.5px solid ${hab.nivel === n ? "#d0290a" : "#ddd"}`, borderRadius: "4px", background: hab.nivel === n ? "#d0290a" : "#fff", color: hab.nivel === n ? "#fff" : "#aaa", fontSize: "10px", fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s", whiteSpace: "nowrap" }}>
@@ -280,7 +300,7 @@ export default function Formulario() {
               </div>
             </div>
             <SectionLabel>Dados Pessoais</SectionLabel>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+            <div className="grid-2">
               <Field label="Nome" value={cvData.nome} onChange={(v) => setCvData({ ...cvData, nome: v })} />
               <Field label="Telefone" value={cvData.telefone} onChange={(v) => setCvData({ ...cvData, telefone: v })} />
               <Field label="E-mail" value={cvData.email} onChange={(v) => setCvData({ ...cvData, email: v })} />
@@ -292,7 +312,7 @@ export default function Formulario() {
               <SectionLabel>Experiências</SectionLabel>
               {cvData.experiencias.filter((e) => e.empresa).map((exp, i) => (
                 <div key={i} style={{ background: "#fff", border: "1.5px solid #e0dbd4", borderRadius: "4px", padding: "20px", marginBottom: "12px", borderLeft: `3px solid ${RED}` }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+                  <div className="grid-2" style={{ marginBottom: "12px" }}>
                     <Field label="Empresa" value={exp.empresa} onChange={(v) => updateExp(i, "empresa", v)} />
                     <Field label="Cargo" value={exp.cargo} onChange={(v) => updateExp(i, "cargo", v)} />
                   </div>
@@ -306,7 +326,7 @@ export default function Formulario() {
               <SectionLabel>Formação</SectionLabel>
               {cvData.formacao.filter((f) => f.curso).map((f, i) => (
                 <div key={i} style={{ background: "#fff", border: "1.5px solid #e0dbd4", borderRadius: "4px", padding: "20px", marginBottom: "12px", borderLeft: `3px solid ${DARK}` }}>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 80px", gap: "12px" }}>
+                  <div className="grid-3">
                     <Field label="Instituição" value={f.instituicao} onChange={(v) => updateForm(i, "instituicao", v)} />
                     <Field label="Curso" value={f.curso} onChange={(v) => updateForm(i, "curso", v)} />
                     <Field label="Ano" value={f.ano} onChange={(v) => updateForm(i, "ano", v)} />
@@ -317,11 +337,11 @@ export default function Formulario() {
             <div style={{ height: "1.5px", background: "#e0dbd4", margin: "24px 0" }} />
             <SectionLabel>Habilidades</SectionLabel>
             {(cvData.habilidades as any[]).map((hab: any, i: number) => (
-              <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "10px", marginBottom: "10px", alignItems: "center" }}>
+              <div key={i} className="hab-row">
                 <div className="field" style={{ margin: 0 }}>
                   <input value={hab.nome} onChange={(e) => { const h = [...(cvData.habilidades as any[])]; h[i].nome = e.target.value; setCvData({ ...cvData, habilidades: h }); }} placeholder="Nome da habilidade" />
                 </div>
-                <div style={{ display: "flex", gap: "4px" }}>
+                <div className="hab-nivels">
                   {(["basico","intermediario","avancado"] as const).map((n) => (
                     <button key={n} type="button" onClick={() => { const h = [...(cvData.habilidades as any[])]; h[i].nivel = n; setCvData({ ...cvData, habilidades: h }); }}
                       style={{ padding: "8px 10px", border: `1.5px solid ${hab.nivel === n ? "#d0290a" : "#ddd"}`, borderRadius: "4px", background: hab.nivel === n ? "#d0290a" : "#fff", color: hab.nivel === n ? "#fff" : "#aaa", fontSize: "10px", fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s", whiteSpace: "nowrap" }}>
