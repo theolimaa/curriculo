@@ -1,105 +1,121 @@
 import jsPDF from "jspdf";
-import { CVData } from "./types";
+import { CVData, Habilidade } from "./types";
 
 const temas: Record<string, { rgb: [number,number,number]; darkRgb: [number,number,number] }> = {
-  vermelho: { rgb: [208,41,10],   darkRgb: [17,17,17] },
-  azul:     { rgb: [26,86,219],   darkRgb: [15,23,42] },
-  verde:    { rgb: [4,120,87],    darkRgb: [5,46,22] },
-  preto:    { rgb: [30,30,30],    darkRgb: [17,17,17] },
+  vermelho: { rgb: [208,41,10],  darkRgb: [17,17,17] },
+  azul:     { rgb: [26,86,219],  darkRgb: [15,23,42] },
+  verde:    { rgb: [4,120,87],   darkRgb: [5,46,22] },
+  preto:    { rgb: [30,30,30],   darkRgb: [17,17,17] },
+};
+
+const nivelPct: Record<string, number> = {
+  basico: 35,
+  intermediario: 68,
+  avancado: 92,
+};
+
+const nivelLabel: Record<string, string> = {
+  basico: "Básico",
+  intermediario: "Intermediário",
+  avancado: "Avançado",
 };
 
 export function generatePDF(cv: CVData): void {
-  const tema = temas[cv.estilo || "vermelho"];
+  const t = temas[cv.estilo || "vermelho"];
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const W = 210, H = 297;
+  const [r,g,b] = t.rgb;
+  const [dr,dg,db] = t.darkRgb;
 
-  // ── HEADER ──────────────────────────────────────────────
-  doc.setFillColor(tema.darkRgb[0], tema.darkRgb[1], tema.darkRgb[2]);
-  doc.rect(0, 0, W, 54, "F");
+  // ── HEADER ESCURO ────────────────────────────────────────
+  doc.setFillColor(dr, dg, db);
+  doc.rect(0, 0, W, 58, "F");
 
   // Faixa colorida topo
-  doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
-  doc.rect(0, 0, W, 4, "F");
+  doc.setFillColor(r, g, b);
+  doc.rect(0, 0, W, 5, "F");
 
-  // Foto
-  if (cv.foto) {
-    try {
-      doc.addImage(cv.foto, "JPEG", W - 52, 8, 38, 40, undefined, "FAST");
-      doc.setDrawColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
-      doc.setLineWidth(1.5);
-      doc.rect(W - 52, 8, 38, 40);
-    } catch {}
-  } else {
-    doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
-    doc.rect(W - 52, 8, 38, 40, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(22);
-    doc.setFont("helvetica", "bold");
-    doc.text(((cv.nome || "?")[0]).toUpperCase(), W - 33, 33, { align: "center" });
-  }
-
-  // Nome
+  // Nome GIGANTE (estilo bold)
   const partes = (cv.nome || "").split(" ");
+  const primeiro = partes[0] || "";
+  const sobrenome = partes.slice(1).join(" ");
+
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(20);
+  doc.setFontSize(28);
   doc.setFont("helvetica", "bold");
-  doc.text((partes[0] || "").toUpperCase(), 14, 22);
-  doc.setFontSize(17);
-  doc.setTextColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
-  doc.text(partes.slice(1).join(" ").toUpperCase(), 14, 31);
+  doc.text(primeiro.toUpperCase(), 14, 28);
+
+  doc.setTextColor(r, g, b);
+  doc.setFontSize(24);
+  doc.text(sobrenome.toUpperCase(), 14, 40);
 
   // Cargo
   const exp0 = cv.experiencias?.find(e => e.cargo);
   if (exp0) {
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(170, 170, 170);
-    doc.text(exp0.cargo.toUpperCase(), 14, 40);
+    doc.setTextColor(160, 160, 160);
+    doc.text(exp0.cargo.toUpperCase(), 14, 50);
   }
 
-  // Linha contatos
-  const cts = [cv.telefone, cv.email, cv.cidade].filter(Boolean) as string[];
+  // Foto (canto direito do header)
+  if (cv.foto) {
+    try {
+      doc.addImage(cv.foto, "JPEG", W - 56, 5, 44, 46, undefined, "FAST");
+      doc.setDrawColor(r, g, b);
+      doc.setLineWidth(2);
+      doc.rect(W - 56, 5, 44, 46);
+    } catch {}
+  } else {
+    doc.setFillColor(r, g, b);
+    doc.rect(W - 56, 5, 44, 46, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(24);
+    doc.setFont("helvetica", "bold");
+    doc.text((cv.nome || "?")[0].toUpperCase(), W - 34, 33, { align: "center" });
+  }
+
+  // Faixa contatos (linha vermelha abaixo do header)
+  doc.setFillColor(r, g, b);
+  doc.rect(0, 58, W, 10, "F");
+  doc.setTextColor(255, 255, 255);
   doc.setFontSize(7.5);
-  doc.setTextColor(150, 150, 150);
+  doc.setFont("helvetica", "normal");
+  const cts = [cv.telefone, cv.email, cv.cidade].filter(Boolean) as string[];
   let cx = 14;
   cts.forEach((c, i) => {
     if (i > 0) {
-      doc.setTextColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
-      doc.text("•", cx - 4, 49);
-      doc.setTextColor(150, 150, 150);
+      doc.setTextColor(255, 255, 255);
+      doc.text("·", cx - 5, 64);
     }
-    doc.text(c, cx, 49);
-    cx += doc.getTextWidth(c) + 8;
+    doc.text(c, cx, 64);
+    cx += doc.getTextWidth(c) + 10;
   });
 
-  // ── COLUNAS ──────────────────────────────────────────────
-  const xL = 14, xR = 120;
-  const wL = 97, wR = 80;
-  let yL = 64, yR = 64;
+  // ── CORPO — DUAS COLUNAS ─────────────────────────────────
+  const xL = 14, xR = 122;
+  const wL = 99, wR = 78;
+  let yL = 80, yR = 80;
 
-  // ── ESQ: OBJETIVO ────────────────────────────────────────
+  // ── ESQ: PERFIL ──────────────────────────────────────────
   if (cv.objetivo) {
-    yL = titulo(doc, "PERFIL PROFISSIONAL", xL, yL, tema, wL);
+    yL = titulo(doc, "PERFIL PROFISSIONAL", xL, yL, t.rgb, wL);
     doc.setFontSize(8.5);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(60, 60, 60);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(80, 80, 80);
     const ls = doc.splitTextToSize(cv.objetivo, wL);
     doc.text(ls, xL, yL);
-    yL += ls.length * 4.5 + 10;
+    yL += ls.length * 4.8 + 10;
   }
 
   // ── ESQ: EXPERIÊNCIAS ────────────────────────────────────
   const exps = cv.experiencias?.filter(e => e.empresa) || [];
   if (exps.length) {
-    yL = titulo(doc, "EXPERIÊNCIA PROFISSIONAL", xL, yL, tema, wL);
-    exps.forEach((exp) => {
-      // Bolinha timeline
-      doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
-      doc.circle(xL + 1.5, yL, 2, "F");
-      // Linha vertical
-      doc.setDrawColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
-      doc.setLineWidth(0.3);
-      doc.line(xL + 1.5, yL + 2, xL + 1.5, yL + 20);
+    yL = titulo(doc, "EXPERIÊNCIA PROFISSIONAL", xL, yL, t.rgb, wL);
+    exps.forEach((exp, idx) => {
+      // Borda esquerda colorida no primeiro, cinza nos demais
+      doc.setFillColor(idx === 0 ? r : 200, idx === 0 ? g : 200, idx === 0 ? b : 200);
+      doc.rect(xL, yL - 2, 2, 22, "F");
 
       doc.setFontSize(9.5);
       doc.setFont("helvetica", "bold");
@@ -108,58 +124,72 @@ export function generatePDF(cv: CVData): void {
 
       doc.setFontSize(8);
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
-      doc.text(exp.empresa || "", xL + 6, yL + 6);
+      doc.setTextColor(r, g, b);
+      doc.text(exp.empresa || "", xL + 6, yL + 6.5);
 
       if (exp.periodo) {
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(140, 140, 140);
+        doc.setTextColor(160, 160, 160);
         const pw = doc.getTextWidth(exp.periodo);
-        doc.text(exp.periodo, xL + wL - pw, yL + 6);
+        doc.text(exp.periodo, xL + wL - pw, yL + 6.5);
       }
 
       if (exp.descricao) {
         doc.setFontSize(8);
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(80, 80, 80);
+        doc.setTextColor(90, 90, 90);
         const dl = doc.splitTextToSize(exp.descricao, wL - 8);
-        doc.text(dl, xL + 6, yL + 11);
-        yL += 11 + dl.length * 4.2 + 8;
+        doc.text(dl, xL + 6, yL + 12);
+        yL += 12 + dl.length * 4.2 + 8;
       } else {
-        yL += 18;
+        yL += 20;
       }
     });
-    yL += 4;
   }
 
   // ── DIR: HABILIDADES ─────────────────────────────────────
-  if (cv.habilidades) {
-    yR = titulo(doc, "HABILIDADES", xR, yR, tema, wR);
-    const habs = cv.habilidades.split(/[,;\n]/).map(h => h.trim()).filter(Boolean);
-    const pcts = [92, 85, 78, 88, 72, 80, 90, 75];
-    habs.slice(0, 8).forEach((hab, i) => {
+  const habs = Array.isArray(cv.habilidades)
+    ? cv.habilidades.filter((h: any) => h.nome)
+    : [];
+
+  if (habs.length) {
+    yR = titulo(doc, "HABILIDADES", xR, yR, t.rgb, wR);
+
+    habs.slice(0, 8).forEach((h: Habilidade) => {
+      const pct = nivelPct[h.nivel] || 68;
+      const label = nivelLabel[h.nivel] || "Intermediário";
+
       doc.setFontSize(8);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(50, 50, 50);
-      doc.text(hab, xR, yR);
+      doc.text(h.nome, xR, yR);
+
+      // Label nível (direita)
+      doc.setFontSize(6.5);
+      doc.setTextColor(r, g, b);
+      doc.setFont("helvetica", "bold");
+      const lw = doc.getTextWidth(label);
+      doc.text(label, xR + wR - lw, yR);
+
       // Barra fundo
-      doc.setFillColor(225, 225, 225);
-      doc.roundedRect(xR, yR + 1.5, wR, 2.5, 1, 1, "F");
+      doc.setFillColor(230, 230, 230);
+      doc.roundedRect(xR, yR + 1.5, wR, 3, 1, 1, "F");
       // Barra preenchida
-      doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
-      doc.roundedRect(xR, yR + 1.5, wR * (pcts[i % pcts.length] / 100), 2.5, 1, 1, "F");
-      yR += 10;
+      doc.setFillColor(r, g, b);
+      doc.roundedRect(xR, yR + 1.5, wR * (pct / 100), 3, 1, 1, "F");
+
+      yR += 11;
     });
     yR += 6;
   }
 
-  // ── DIR: FORMAÇÃO ────────────────────────────────────────
+  // ── DIR: FORMAÇÃO ─────────────────────────────────────────
   const forms = cv.formacao?.filter(f => f.curso) || [];
   if (forms.length) {
-    yR = titulo(doc, "FORMAÇÃO ACADÊMICA", xR, yR, tema, wR);
+    yR = titulo(doc, "FORMAÇÃO ACADÊMICA", xR, yR, t.rgb, wR);
     forms.forEach(f => {
-      doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
-      doc.rect(xR, yR - 1, 3, 3, "F");
+      doc.setFillColor(r, g, b);
+      doc.rect(xR, yR - 1, 3, 12, "F");
 
       doc.setFontSize(9);
       doc.setFont("helvetica", "bold");
@@ -178,20 +208,20 @@ export function generatePDF(cv: CVData): void {
       if (f.ano) {
         doc.setFontSize(7.5);
         doc.setFont("helvetica", "bold");
-        doc.setTextColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
+        doc.setTextColor(r, g, b);
         doc.text(f.ano, xR + 6, yR);
         yR += 8;
       }
     });
   }
 
-  // ── DIVISÓRIA ENTRE COLUNAS ──────────────────────────────
-  doc.setDrawColor(225, 225, 225);
+  // ── LINHA DIVISÓRIA COLUNAS ──────────────────────────────
+  doc.setDrawColor(230, 230, 230);
   doc.setLineWidth(0.3);
-  doc.line(xR - 5, 60, xR - 5, Math.max(yL, yR) + 4);
+  doc.line(xR - 6, 76, xR - 6, Math.max(yL, yR) + 4);
 
   // ── RODAPÉ ───────────────────────────────────────────────
-  doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
+  doc.setFillColor(r, g, b);
   doc.rect(0, H - 8, W, 8, "F");
   doc.setFontSize(7);
   doc.setTextColor(255, 255, 255);
@@ -201,14 +231,14 @@ export function generatePDF(cv: CVData): void {
   doc.save(`curriculo-${(cv.nome || "pro").replace(/\s+/g, "-").toLowerCase()}.pdf`);
 }
 
-function titulo(doc: jsPDF, txt: string, x: number, y: number, tema: any, w: number): number {
+function titulo(doc: jsPDF, txt: string, x: number, y: number, rgb: [number,number,number], w: number): number {
   doc.setFontSize(8.5);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(17, 17, 17);
   doc.text(txt, x, y);
-  doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
-  doc.rect(x, y + 1.5, 18, 1, "F");
+  doc.setFillColor(rgb[0], rgb[1], rgb[2]);
+  doc.rect(x, y + 1.5, 20, 1.2, "F");
   doc.setFillColor(220, 220, 220);
-  doc.rect(x + 19, y + 1.5, w - 19, 0.5, "F");
-  return y + 10;
+  doc.rect(x + 21, y + 1.5, w - 21, 0.5, "F");
+  return y + 11;
 }
