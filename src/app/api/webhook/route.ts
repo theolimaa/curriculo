@@ -1,32 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
-import { MercadoPagoConfig, Payment } from "mercadopago";
 import { approvePayment } from "@/lib/storage";
-
-const client = new MercadoPagoConfig({
-  accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN!,
-});
 
 export async function POST(req: NextRequest) {
   try {
+    // Valida o token da Kiwify
+    const token = req.headers.get("x-kiwify-token") || req.nextUrl.searchParams.get("token");
+    const expectedToken = process.env.KIWIFY_WEBHOOK_TOKEN;
+
+    if (expectedToken && token !== expectedToken) {
+      console.warn("Webhook com token inválido:", token);
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await req.json();
 
-    if (body.type !== "payment") {
+    const status = body?.order_status;
+    const sessionId = body?.passthrough || body?.order?.passthrough;
+
+    if (!sessionId) {
+      console.log("Webhook sem sessionId:", JSON.stringify(body));
       return NextResponse.json({ ok: true });
     }
 
-    const paymentId = String(body.data?.id);
-
-    const paymentAPI = new Payment(client);
-    const result = await paymentAPI.get({ id: paymentId });
-
-    if (result.status === "approved") {
-      approvePayment(paymentId);
-      console.log(`✅ Pagamento aprovado: ${paymentId}`);
+    if (status === "paid") {
+      approvePayment(sessionId);
+      console.log(`✅ Pagamento Kiwify aprovado: ${sessionId}`);
     }
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("Erro no webhook:", error);
+    console.error("Erro no webhook Kiwify:", error);
     return NextResponse.json({ error: "Webhook error" }, { status: 500 });
   }
 }
