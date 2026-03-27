@@ -322,7 +322,28 @@ export default function Formulario() {
             <div style={{ height: "1.5px", background: "#e0dbd4", margin: "24px 0" }} />
             <SectionLabel>Habilidades</SectionLabel>
             <FieldArea label="Habilidades" value={cvData.habilidades} onChange={(v) => setCvData({ ...cvData, habilidades: v })} />
-            <div style={{ marginTop: "32px" }}>
+
+            <div style={{ height: "1.5px", background: "#e0dbd4", margin: "24px 0" }} />
+            <SectionLabel>Estilo do Currículo</SectionLabel>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+              {([
+                { id: "vermelho", label: "Vermelho", cor: "#d0290a" },
+                { id: "azul",     label: "Azul",     cor: "#1a56db" },
+                { id: "verde",    label: "Verde",    cor: "#047857" },
+                { id: "preto",    label: "Preto",    cor: "#111111" },
+              ] as const).map((e) => (
+                <div key={e.id} onClick={() => setCvData({ ...cvData!, estilo: e.id })}
+                  style={{ border: `2px solid ${cvData?.estilo === e.id ? e.cor : "#e0dbd4"}`, borderRadius: "6px", padding: "10px 14px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", background: cvData?.estilo === e.id ? `${e.cor}08` : "#fff", transition: "all 0.15s" }}>
+                  <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: e.cor, flexShrink: 0 }} />
+                  <span style={{ fontSize: "13px", fontWeight: 800, color: "#111" }}>{e.label}</span>
+                  {cvData?.estilo === e.id && (
+                    <div style={{ marginLeft: "auto", width: "16px", height: "16px", borderRadius: "50%", background: e.cor, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "10px", fontWeight: 900 }}>✓</div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: "24px" }}>
               <button className="btn-main" onClick={() => { if (cvData) generatePDF(cvData); setStep("download"); }}>Gerar e baixar PDF</button>
             </div>
           </div>
