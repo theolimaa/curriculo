@@ -63,6 +63,7 @@ export function generatePDF(cv: CVData): void {
   // Foto (canto direito do header)
   if (cv.foto) {
     try {
+      // fotoOffset controls objectPosition via canvas-like crop
       doc.addImage(cv.foto, "JPEG", W - 56, 5, 44, 46, undefined, "FAST");
       doc.setDrawColor(r, g, b);
       doc.setLineWidth(2);
@@ -230,7 +231,19 @@ export function generatePDF(cv: CVData): void {
   doc.setFont("helvetica", "normal");
   doc.text("Gerado por Currículo Pro", W / 2, H - 3.5, { align: "center" });
 
-  doc.save(`curriculo-${(cv.nome || "pro").replace(/\s+/g, "-").toLowerCase()}.pdf`);
+  const filename = `curriculo-${(cv.nome || "pro").replace(/\s+/g, "-").toLowerCase()}.pdf`;
+
+  // iOS/mobile: blob download doesn't work — open PDF in new tab instead
+  const isMobile = typeof window !== "undefined" &&
+    /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    const blob = doc.output("blob");
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+  } else {
+    doc.save(filename);
+  }
 }
 
 function titulo(doc: jsPDF, txt: string, x: number, y: number, rgb: [number,number,number], w: number): number {
