@@ -15,6 +15,7 @@ const emptyForm: FormData = {
   experiencias: [{ empresa: "", cargo: "", periodo: "", descricao: "" }],
   formacao: [{ instituicao: "", curso: "", ano: "" }],
   habilidades: "",
+  estilo: "vermelho" as "vermelho" | "azul" | "verde" | "preto",
 };
 
 export default function Formulario() {
@@ -198,6 +199,31 @@ export default function Formulario() {
             <div style={{ height: "1.5px", background: "#e0dbd4", margin: "16px 0 28px" }} />
             <SectionLabel>Habilidades</SectionLabel>
             <FieldArea label="Liste suas habilidades" value={formData.habilidades} onChange={(v) => setFormData({ ...formData, habilidades: v })} placeholder="Pacote Office, Atendimento ao cliente, CNH B..." />
+
+
+            <div style={{ height: "1.5px", background: "#e0dbd4", margin: "28px 0" }} />
+            <SectionLabel>Estilo do Currículo</SectionLabel>
+            <p style={{ fontSize: "13px", color: "#888", marginBottom: "16px" }}>Escolha a cor de destaque do seu currículo</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "8px" }}>
+              {([
+                { id: "vermelho", label: "Vermelho", cor: "#d0290a", desc: "Ousado e marcante" },
+                { id: "azul",     label: "Azul",     cor: "#1a56db", desc: "Profissional e sério" },
+                { id: "verde",    label: "Verde",    cor: "#047857", desc: "Equilibrado e fresco" },
+                { id: "preto",    label: "Preto",    cor: "#111111", desc: "Elegante e neutro" },
+              ] as const).map((e) => (
+                <div key={e.id} onClick={() => setFormData({ ...formData, estilo: e.id })}
+                  style={{ border: `2px solid ${formData.estilo === e.id ? e.cor : "#e0dbd4"}`, borderRadius: "6px", padding: "12px 14px", cursor: "pointer", display: "flex", alignItems: "center", gap: "12px", background: formData.estilo === e.id ? `${e.cor}08` : "#fff", transition: "all 0.15s" }}>
+                  <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: e.cor, flexShrink: 0 }} />
+                  <div>
+                    <p style={{ margin: 0, fontSize: "13px", fontWeight: 800, color: "#111" }}>{e.label}</p>
+                    <p style={{ margin: 0, fontSize: "11px", color: "#888" }}>{e.desc}</p>
+                  </div>
+                  {formData.estilo === e.id && (
+                    <div style={{ marginLeft: "auto", width: "18px", height: "18px", borderRadius: "50%", background: e.cor, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "11px", fontWeight: 900 }}>✓</div>
+                  )}
+                </div>
+              ))}
+            </div>
 
             <div style={{ marginTop: "32px" }}>
               <button className="btn-main" onClick={handleSubmitForm}>Continuar para pagamento →</button>
