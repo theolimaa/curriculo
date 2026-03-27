@@ -41,6 +41,12 @@ export default function LandingPage() {
         .step-card:hover { background: ${RED}; }
         .step-card:hover .step-desc { color: rgba(255,255,255,0.8) !important; }
         .step-card:hover .step-num { color: rgba(255,255,255,0.45) !important; }
+        .cv-compare-grid { grid-template-columns: 1fr auto 1fr; }
+        @media (max-width: 768px) {
+          .cv-compare-grid { grid-template-columns: 1fr !important; }
+          .cv-arrow { display: none !important; }
+          .cv-compare-grid > div:nth-child(2) { display: none; }
+        }
         .card-white { background: #fff; border: 1.5px solid #e0dbd4; padding: 32px 28px; transition: all 0.25s ease; }
         .card-white:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); border-color: ${RED}; }
         .faq-btn { width: 100%; background: transparent; border: none; text-align: left; padding: 24px 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-family: 'Barlow', sans-serif; font-size: 17px; font-weight: 800; color: ${DARK}; transition: color 0.2s; }
@@ -166,7 +172,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: "32px", alignItems: "start" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: "32px", alignItems: "start" }} className="cv-compare-grid">
 
             {/* ANTES */}
             <div>
@@ -233,7 +239,7 @@ export default function LandingPage() {
             </div>
 
             {/* SETA */}
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", paddingTop: "48px", gap: "8px" }}>
+            <div className="cv-arrow" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", paddingTop: "48px", gap: "8px" }}>
               <div style={{ width: "48px", height: "48px", background: DARK, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path d="M4 10h12M11 5l5 5-5 5" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
