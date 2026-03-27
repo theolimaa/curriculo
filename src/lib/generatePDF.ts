@@ -5,20 +5,10 @@ const temas: Record<string, { rgb: [number,number,number]; darkRgb: [number,numb
   vermelho: { rgb: [208,41,10],  darkRgb: [17,17,17] },
   azul:     { rgb: [26,86,219],  darkRgb: [15,23,42] },
   verde:    { rgb: [4,120,87],   darkRgb: [5,46,22] },
-  preto:    { rgb: [30,30,30],   darkRgb: [17,17,17] },
+  preto:    { rgb: [40,40,40],   darkRgb: [17,17,17] },
 };
 
-const nivelPct: Record<string, number> = {
-  basico: 35,
-  intermediario: 68,
-  avancado: 92,
-};
-
-const nivelLabel: Record<string, string> = {
-  basico: "Básico",
-  intermediario: "Intermediário",
-  avancado: "Avançado",
-};
+const nivelPct: Record<string, number> = { basico: 35, intermediario: 68, avancado: 92 };
 
 export function generatePDF(cv: CVData): void {
   const t = temas[cv.estilo || "vermelho"];
@@ -27,203 +17,235 @@ export function generatePDF(cv: CVData): void {
   const [r,g,b] = t.rgb;
   const [dr,dg,db] = t.darkRgb;
 
-  // ── HEADER ESCURO ────────────────────────────────────────
+  const SIDEBAR_W = 68;
+  const CONTENT_X = SIDEBAR_W + 10;
+  const CONTENT_W = W - CONTENT_X - 10;
+
+  // ── SIDEBAR ESCURA ───────────────────────────────────────
   doc.setFillColor(dr, dg, db);
-  doc.rect(0, 0, W, 58, "F");
+  doc.rect(0, 0, SIDEBAR_W, H, "F");
 
-  // Faixa colorida topo
+  // Borda colorida esquerda
   doc.setFillColor(r, g, b);
-  doc.rect(0, 0, W, 5, "F");
+  doc.rect(0, 0, 4, H, "F");
 
-  // Nome GIGANTE (estilo bold)
+  // Avatar círculo
+  const avatarY = 22;
+  if (cv.foto) {
+    try {
+      // círculo via clip — simulado com quadrado e depois círculo branco sobreposto
+      doc.addImage(cv.foto, "JPEG", 14, avatarY, 40, 40, undefined, "FAST");
+      // borda colorida
+      doc.setDrawColor(r, g, b);
+      doc.setLineWidth(1.5);
+      doc.circle(34, avatarY + 20, 20, "S");
+    } catch {}
+  } else {
+    doc.setFillColor(r, g, b);
+    doc.circle(34, avatarY + 20, 20, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.text((cv.nome || "?")[0].toUpperCase(), 34, avatarY + 25, { align: "center" });
+  }
+
+  // Nome GIGANTE no sidebar
   const partes = (cv.nome || "").split(" ");
   const primeiro = partes[0] || "";
   const sobrenome = partes.slice(1).join(" ");
 
+  let nameY = avatarY + 50;
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(28);
+  doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
-  doc.text(primeiro.toUpperCase(), 14, 28);
+  const nomeLines = doc.splitTextToSize(primeiro.toUpperCase(), SIDEBAR_W - 12);
+  doc.text(nomeLines, 8, nameY);
+  nameY += nomeLines.length * 8;
 
-  // Sobrenome: usa cor de destaque, mas no tema preto usa branco para contraste
-  const [sr, sg, sb] = (cv.estilo === "preto") ? [200, 200, 200] : [r, g, b];
-  doc.setTextColor(sr, sg, sb);
-  doc.setFontSize(24);
-  doc.text(sobrenome.toUpperCase(), 14, 40);
+  const [sr, sg, sb2] = (cv.estilo === "preto") ? [180, 180, 180] : [r, g, b];
+  doc.setTextColor(sr, sg, sb2);
+  doc.setFontSize(15);
+  const sobLines = doc.splitTextToSize(sobrenome.toUpperCase(), SIDEBAR_W - 12);
+  doc.text(sobLines, 8, nameY);
+  nameY += sobLines.length * 7;
 
   // Cargo
   const exp0 = cv.experiencias?.find(e => e.cargo);
   if (exp0) {
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(160, 160, 160);
-    doc.text(exp0.cargo.toUpperCase(), 14, 50);
-  }
-
-  // Foto (canto direito do header)
-  if (cv.foto) {
-    try {
-      // fotoOffset controls objectPosition via canvas-like crop
-      doc.addImage(cv.foto, "JPEG", W - 56, 5, 44, 46, undefined, "FAST");
-      doc.setDrawColor(r, g, b);
-      doc.setLineWidth(2);
-      doc.rect(W - 56, 5, 44, 46);
-    } catch {}
-  } else {
-    doc.setFillColor(r, g, b);
-    doc.rect(W - 56, 5, 44, 46, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(24);
+    doc.setFontSize(7);
     doc.setFont("helvetica", "bold");
-    doc.text((cv.nome || "?")[0].toUpperCase(), W - 34, 33, { align: "center" });
+    doc.setTextColor(r, g, b);
+    doc.text((exp0.cargo + " — " + (exp0.empresa || "")).toUpperCase().slice(0, 28), 8, nameY + 4);
+    nameY += 10;
   }
 
-  // Faixa contatos (linha vermelha abaixo do header)
-  doc.setFillColor(r, g, b);
-  doc.rect(0, 58, W, 10, "F");
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(7.5);
-  doc.setFont("helvetica", "normal");
-  const cts = [cv.telefone, cv.email, cv.cidade].filter(Boolean) as string[];
-  let cx = 14;
-  cts.forEach((c, i) => {
-    if (i > 0) {
-      doc.setTextColor(255, 255, 255);
-      doc.text("·", cx - 5, 64);
-    }
-    doc.text(c, cx, 64);
-    cx += doc.getTextWidth(c) + 10;
+  // Linha divisória
+  let sY = nameY + 6;
+  const divLine = () => {
+    doc.setDrawColor(40, 40, 40);
+    doc.setLineWidth(0.3);
+    doc.line(8, sY, SIDEBAR_W - 4, sY);
+    sY += 6;
+  };
+
+  // Contato
+  divLine();
+  doc.setFontSize(7);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(r, g, b);
+  doc.text("CONTATO", 8, sY);
+  sY += 5;
+
+  const contatos = [
+    { icon: "✉", val: cv.email },
+    { icon: "☎", val: cv.telefone },
+    { icon: "⚑", val: cv.cidade },
+  ].filter(c => c.val);
+
+  contatos.forEach(c => {
+    doc.setFontSize(7);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(180, 180, 180);
+    const lines = doc.splitTextToSize(c.val!, SIDEBAR_W - 16);
+    doc.text(lines, 10, sY);
+    sY += lines.length * 4.5 + 1;
   });
+  sY += 2;
 
-  // ── CORPO — DUAS COLUNAS ─────────────────────────────────
-  const xL = 14, xR = 122;
-  const wL = 99, wR = 78;
-  let yL = 80, yR = 80;
-
-  // ── ESQ: PERFIL ──────────────────────────────────────────
-  if (cv.objetivo) {
-    yL = titulo(doc, "PERFIL PROFISSIONAL", xL, yL, t.rgb, wL);
-    doc.setFontSize(8.5);
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(80, 80, 80);
-    const ls = doc.splitTextToSize(cv.objetivo, wL);
-    doc.text(ls, xL, yL);
-    yL += ls.length * 4.8 + 10;
-  }
-
-  // ── ESQ: EXPERIÊNCIAS ────────────────────────────────────
-  const exps = cv.experiencias?.filter(e => e.empresa) || [];
-  if (exps.length) {
-    yL = titulo(doc, "EXPERIÊNCIA PROFISSIONAL", xL, yL, t.rgb, wL);
-    exps.forEach((exp, idx) => {
-      // Borda esquerda colorida no primeiro, cinza nos demais
-      doc.setFillColor(idx === 0 ? r : 200, idx === 0 ? g : 200, idx === 0 ? b : 200);
-      doc.rect(xL, yL - 2, 2, 22, "F");
-
-      doc.setFontSize(9.5);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(17, 17, 17);
-      doc.text(exp.cargo || "", xL + 6, yL + 1);
-
-      doc.setFontSize(8);
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(r, g, b);
-      doc.text(exp.empresa || "", xL + 6, yL + 6.5);
-
-      if (exp.periodo) {
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(160, 160, 160);
-        const pw = doc.getTextWidth(exp.periodo);
-        doc.text(exp.periodo, xL + wL - pw, yL + 6.5);
-      }
-
-      if (exp.descricao) {
-        doc.setFontSize(8);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(90, 90, 90);
-        const dl = doc.splitTextToSize(exp.descricao, wL - 8);
-        doc.text(dl, xL + 6, yL + 12);
-        yL += 12 + dl.length * 4.2 + 8;
-      } else {
-        yL += 20;
-      }
-    });
-  }
-
-  // ── DIR: HABILIDADES ─────────────────────────────────────
+  // Habilidades
   const habs = Array.isArray(cv.habilidades)
     ? cv.habilidades.filter((h: any) => h.nome)
     : [];
 
   if (habs.length) {
-    yR = titulo(doc, "HABILIDADES", xR, yR, t.rgb, wR);
+    divLine();
+    doc.setFontSize(7);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(r, g, b);
+    doc.text("HABILIDADES", 8, sY);
+    sY += 5;
 
-    habs.slice(0, 8).forEach((h: Habilidade) => {
+    habs.slice(0, 7).forEach((h: Habilidade) => {
       const pct = nivelPct[h.nivel] || 68;
-      const label = nivelLabel[h.nivel] || "Intermediário";
-
-      doc.setFontSize(8);
+      doc.setFontSize(7.5);
       doc.setFont("helvetica", "normal");
-      doc.setTextColor(50, 50, 50);
-      doc.text(h.nome, xR, yR);
-
-      // Label nível (direita)
-      doc.setFontSize(6.5);
-      doc.setTextColor(r, g, b);
-      doc.setFont("helvetica", "bold");
-      const lw = doc.getTextWidth(label);
-      doc.text(label, xR + wR - lw, yR);
-
+      doc.setTextColor(200, 200, 200);
+      doc.text(h.nome, 8, sY);
+      sY += 3;
       // Barra fundo
-      doc.setFillColor(230, 230, 230);
-      doc.roundedRect(xR, yR + 1.5, wR, 3, 1, 1, "F");
+      doc.setFillColor(40, 40, 40);
+      doc.roundedRect(8, sY, SIDEBAR_W - 16, 2.5, 1, 1, "F");
       // Barra preenchida
       doc.setFillColor(r, g, b);
-      doc.roundedRect(xR, yR + 1.5, wR * (pct / 100), 3, 1, 1, "F");
-
-      yR += 11;
+      doc.roundedRect(8, sY, (SIDEBAR_W - 16) * (pct / 100), 2.5, 1, 1, "F");
+      sY += 6;
     });
-    yR += 6;
+    sY += 2;
   }
 
-  // ── DIR: FORMAÇÃO ─────────────────────────────────────────
-  const forms = cv.formacao?.filter(f => f.curso) || [];
+  // Formação no sidebar
+  const forms = cv.formacao?.filter(f => f.curso || f.grau) || [];
   if (forms.length) {
-    yR = titulo(doc, "FORMAÇÃO ACADÊMICA", xR, yR, t.rgb, wR);
-    forms.forEach(f => {
-      doc.setFillColor(r, g, b);
-      doc.rect(xR, yR - 1, 3, 12, "F");
+    divLine();
+    doc.setFontSize(7);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(r, g, b);
+    doc.text("FORMAÇÃO", 8, sY);
+    sY += 5;
 
-      doc.setFontSize(9);
+    forms.forEach(f => {
+      const grauLabel = f.curso || f.grau || "";
+      doc.setFontSize(8);
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(17, 17, 17);
-      const cl = doc.splitTextToSize(f.curso, wR - 6);
-      doc.text(cl, xR + 6, yR);
-      yR += cl.length * 4.5;
+      doc.setTextColor(255, 255, 255);
+      const gl = doc.splitTextToSize(grauLabel, SIDEBAR_W - 16);
+      doc.text(gl, 8, sY);
+      sY += gl.length * 4.5;
 
       if (f.instituicao) {
-        doc.setFontSize(8);
+        doc.setFontSize(7);
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(100, 100, 100);
-        doc.text(f.instituicao, xR + 6, yR);
-        yR += 4.5;
+        doc.setTextColor(150, 150, 150);
+        const il = doc.splitTextToSize(f.instituicao, SIDEBAR_W - 16);
+        doc.text(il, 8, sY);
+        sY += il.length * 4;
       }
-      if (f.ano) {
-        doc.setFontSize(7.5);
+
+      // Período
+      const periodo = f.presente
+        ? `${f.periodoInicio || ""} — Presente`
+        : f.periodoFim
+          ? `${f.periodoInicio || ""} — ${f.periodoFim}`
+          : f.ano || "";
+      if (periodo.trim()) {
+        doc.setFontSize(7);
         doc.setFont("helvetica", "bold");
         doc.setTextColor(r, g, b);
-        doc.text(f.ano, xR + 6, yR);
-        yR += 8;
+        doc.text(periodo, 8, sY);
+        sY += 4;
+      }
+      sY += 4;
+    });
+  }
+
+  // ── CONTEÚDO DIREITO ─────────────────────────────────────
+  let cY = 18;
+
+  // Objetivo
+  if (cv.objetivo) {
+    cY = secRight(doc, "OBJETIVO", CONTENT_X, cY, [r,g,b], CONTENT_W);
+    doc.setFontSize(8.5);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(60, 60, 60);
+    const ol = doc.splitTextToSize(cv.objetivo, CONTENT_W);
+    doc.text(ol, CONTENT_X, cY);
+    cY += ol.length * 4.8 + 10;
+  }
+
+  // Experiências
+  const exps = cv.experiencias?.filter(e => e.empresa) || [];
+  if (exps.length) {
+    cY = secRight(doc, "EXPERIÊNCIA", CONTENT_X, cY, [r,g,b], CONTENT_W);
+
+    exps.forEach(exp => {
+      // Cargo bold
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(17, 17, 17);
+      doc.text(exp.cargo || "", CONTENT_X, cY);
+
+      // Período (direita)
+      if (exp.periodo) {
+        doc.setFontSize(7.5);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(180, 180, 180);
+        const pw = doc.getTextWidth(exp.periodo);
+        doc.text(exp.periodo, CONTENT_X + CONTENT_W - pw, cY);
+      }
+      cY += 5;
+
+      // Empresa em vermelho
+      doc.setFontSize(8.5);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(r, g, b);
+      doc.text(exp.empresa || "", CONTENT_X, cY);
+      cY += 5;
+
+      // Descrição
+      if (exp.descricao) {
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(80, 80, 80);
+        const dl = doc.splitTextToSize(exp.descricao, CONTENT_W);
+        doc.text(dl, CONTENT_X, cY);
+        cY += dl.length * 4.2 + 7;
+      } else {
+        cY += 4;
       }
     });
   }
 
-  // ── LINHA DIVISÓRIA COLUNAS ──────────────────────────────
-  doc.setDrawColor(230, 230, 230);
-  doc.setLineWidth(0.3);
-  doc.line(xR - 6, 76, xR - 6, Math.max(yL, yR) + 4);
-
-  // ── RODAPÉ ───────────────────────────────────────────────
+  // ── RODAPÉ COLORIDO ──────────────────────────────────────
   doc.setFillColor(r, g, b);
   doc.rect(0, H - 8, W, 8, "F");
   doc.setFontSize(7);
@@ -231,12 +253,15 @@ export function generatePDF(cv: CVData): void {
   doc.setFont("helvetica", "normal");
   doc.text("Gerado por Currículo Pro", W / 2, H - 3.5, { align: "center" });
 
-  const filename = `curriculo-${(cv.nome || "pro").replace(/\s+/g, "-").toLowerCase()}.pdf`;
+  // ── BORDA EXTERNA ────────────────────────────────────────
+  doc.setDrawColor(r, g, b);
+  doc.setLineWidth(1);
+  doc.rect(0, 0, W, H, "S");
 
-  // iOS/mobile: blob download doesn't work — open PDF in new tab instead
+  // Save
+  const filename = `curriculo-${(cv.nome || "pro").replace(/\s+/g, "-").toLowerCase()}.pdf`;
   const isMobile = typeof window !== "undefined" &&
     /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
   if (isMobile) {
     const blob = doc.output("blob");
     const url = URL.createObjectURL(blob);
@@ -246,14 +271,20 @@ export function generatePDF(cv: CVData): void {
   }
 }
 
-function titulo(doc: jsPDF, txt: string, x: number, y: number, rgb: [number,number,number], w: number): number {
-  doc.setFontSize(8.5);
+function secRight(
+  doc: jsPDF, title: string, x: number, y: number,
+  rgb: [number,number,number], w: number
+): number {
+  // Traço vermelho + título
+  doc.setFillColor(rgb[0], rgb[1], rgb[2]);
+  doc.rect(x, y - 2, 4, 5, "F");
+  doc.setFontSize(9);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(17, 17, 17);
-  doc.text(txt, x, y);
-  doc.setFillColor(rgb[0], rgb[1], rgb[2]);
-  doc.rect(x, y + 1.5, 20, 1.2, "F");
-  doc.setFillColor(220, 220, 220);
-  doc.rect(x + 21, y + 1.5, w - 21, 0.5, "F");
-  return y + 11;
+  doc.text(title, x + 7, y + 1);
+  // Linha cinza
+  doc.setDrawColor(220, 220, 220);
+  doc.setLineWidth(0.3);
+  doc.line(x + 7 + doc.getTextWidth(title) + 3, y, x + w, y);
+  return y + 10;
 }
