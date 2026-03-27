@@ -199,7 +199,7 @@ export default function Formulario() {
 
             <div style={{ height: "1.5px", background: "#e0dbd4", margin: "28px 0" }} />
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-              <SectionLabel style={{ margin: 0 }}>Experiências Profissionais</SectionLabel>
+              <p style={{ fontSize: "11px", fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "1.5px", margin: 0 }}>Experiências Profissionais</p>
               <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "13px", color: "#888", fontWeight: 600 }}>
                 <input type="checkbox" checked={semExperiencia} onChange={(e) => setSemExperiencia(e.target.checked)}
                   style={{ width: "16px", height: "16px", accentColor: RED, cursor: "pointer" }} />
