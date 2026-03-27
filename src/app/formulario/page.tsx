@@ -54,6 +54,31 @@ export default function Formulario() {
     } catch { setError("Erro ao iniciar pagamento. Tente novamente."); }
   };
 
+  // Recover from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("curriculo_cv");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.nome) {
+          setCvData(parsed);
+          setStep("edit");
+        }
+      }
+    } catch {}
+  }, []);
+
+  // Warn before leaving when on edit/download step
+  useEffect(() => {
+    if (step !== "edit" && step !== "download") return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [step]);
+
   const handleGenerateCV = async (sid?: string) => {
     const id = sid || sessionId;
     setStep("loading");
@@ -61,7 +86,9 @@ export default function Formulario() {
       const res = await fetch("/api/generate-cv", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: id }) });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      setCvData({ ...data.cvData, foto: formData.foto, estilo: formData.estilo, fotoOffset: cropOffset });
+      const cv = { ...data.cvData, foto: formData.foto, estilo: formData.estilo, fotoOffset: cropOffset };
+      setCvData(cv);
+      try { localStorage.setItem("curriculo_cv", JSON.stringify(cv)); } catch {}
       setStep("edit");
     } catch { setError("Erro ao gerar currículo. Entre em contato."); setStep("payment"); }
   };
@@ -75,7 +102,9 @@ export default function Formulario() {
       const res2 = await fetch("/api/generate-cv", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: data.sessionId }) });
       const data2 = await res2.json();
       if (data2.error) throw new Error(data2.error);
-      setCvData({ ...data2.cvData, foto: formData.foto, estilo: formData.estilo, fotoOffset: cropOffset });
+      const cv2 = { ...data2.cvData, foto: formData.foto, estilo: formData.estilo, fotoOffset: cropOffset };
+      setCvData(cv2);
+      try { localStorage.setItem("curriculo_cv", JSON.stringify(cv2)); } catch {}
       setStep("edit");
     } catch { setError("Erro no teste."); setStep("form"); }
   };
@@ -352,11 +381,18 @@ export default function Formulario() {
 
         {step === "edit" && cvData && (
           <div className="fade-up">
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "32px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
               <div style={{ width: "36px", height: "36px", background: RED, borderRadius: "4px", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "18px", fontWeight: 900 }}>✓</div>
               <div>
                 <h1 style={{ fontSize: "24px", fontWeight: 900, letterSpacing: "-0.5px", margin: 0 }}>Currículo gerado!</h1>
                 <p style={{ margin: 0, fontSize: "14px", color: "#888" }}>Revise e edite antes de baixar</p>
+              </div>
+            </div>
+            <div style={{ background: "#f0fdf4", border: "1.5px solid #86efac", borderRadius: "4px", padding: "10px 14px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "16px" }}>💾</span>
+              <div>
+                <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "#166534" }}>Salvo automaticamente</p>
+                <p style={{ margin: 0, fontSize: "12px", color: "#4ade80", color: "#15803d" }}>Se fechar a página, seu currículo estará aqui quando voltar.</p>
               </div>
             </div>
             <SectionLabel>Dados Pessoais</SectionLabel>
@@ -433,7 +469,7 @@ export default function Formulario() {
             </div>
 
             <div style={{ marginTop: "24px" }}>
-              <button className="btn-main" onClick={() => { if (cvData) generatePDF(cvData); setStep("download"); }}>Gerar e baixar PDF</button>
+              <button className="btn-main" onClick={() => { if (cvData) { generatePDF(cvData); try { localStorage.removeItem("curriculo_cv"); } catch {} } setStep("download"); }}>Gerar e baixar PDF</button>
             </div>
           </div>
         )}
