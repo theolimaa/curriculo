@@ -20,7 +20,8 @@ export interface FormData {
   experiencias: Experiencia[];
   formacao: Formacao[];
   habilidades: string;
-  foto?: string; // base64
+  foto?: string;
+  estilo?: "vermelho" | "azul" | "verde" | "preto";
 }
 
 export interface CVData extends FormData {
