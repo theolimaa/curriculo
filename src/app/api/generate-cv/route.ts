@@ -1,82 +1,78 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { isApproved, getPayment } from "@/lib/storage";
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-});
 
 export async function POST(req: NextRequest) {
   try {
-    const { paymentId } = await req.json();
+    const { sessionId } = await req.json();
 
-    // Verifica se o pagamento foi aprovado
-    if (!isApproved(paymentId)) {
+    if (!isApproved(sessionId)) {
       return NextResponse.json({ error: "Pagamento não confirmado" }, { status: 402 });
     }
 
-    const payment = getPayment(paymentId);
+    const payment = getPayment(sessionId);
     if (!payment) {
-      return NextResponse.json({ error: "Pagamento não encontrado" }, { status: 404 });
+      return NextResponse.json({ error: "Sessão não encontrada" }, { status: 404 });
     }
 
-    const formData = payment.formData;
+    const f = payment.formData;
 
-    // Monta o prompt para o Claude
-    const prompt = `
+    // Se tiver chave da Anthropic, usa a IA para melhorar os textos
+    if (process.env.ANTHROPIC_API_KEY) {
+      const Anthropic = (await import("@anthropic-ai/sdk")).default;
+      const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+      const prompt = `
 Você é um especialista em RH brasileiro. Melhore e profissionalize os dados abaixo para um currículo.
 Retorne APENAS um JSON válido, sem markdown, sem explicações.
 
-Dados do candidato:
-- Nome: ${formData.nome}
-- Telefone: ${formData.telefone}
-- Email: ${formData.email || "não informado"}
-- Cidade: ${formData.cidade || "não informada"}
-- Objetivo declarado: ${formData.objetivo || "não informado"}
-- Habilidades: ${formData.habilidades || "não informadas"}
-- Experiências: ${JSON.stringify(formData.experiencias)}
-- Formação: ${JSON.stringify(formData.formacao)}
+Dados:
+- Nome: ${f.nome}
+- Telefone: ${f.telefone}
+- Email: ${f.email || ""}
+- Cidade: ${f.cidade || ""}
+- Objetivo: ${f.objetivo || ""}
+- Habilidades: ${f.habilidades || ""}
+- Experiências: ${JSON.stringify(f.experiencias)}
+- Formação: ${JSON.stringify(f.formacao)}
 
-Retorne no formato:
+Formato de retorno:
 {
   "nome": "string",
   "telefone": "string",
   "email": "string",
   "cidade": "string",
   "objetivo": "string (reescreva de forma profissional, 2-3 linhas)",
-  "experiencias": [
-    {
-      "empresa": "string",
-      "cargo": "string",
-      "periodo": "string",
-      "descricao": "string (reescreva as atividades de forma profissional)"
+  "experiencias": [{ "empresa": "string", "cargo": "string", "periodo": "string", "descricao": "string" }],
+  "formacao": [{ "instituicao": "string", "curso": "string", "ano": "string" }],
+  "habilidades": "string"
+}`;
+
+      const message = await anthropic.messages.create({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1500,
+        messages: [{ role: "user", content: prompt }],
+      });
+
+      const text = message.content[0].type === "text" ? message.content[0].text : "";
+      const clean = text.replace(/```json|```/g, "").trim();
+      const cvData = JSON.parse(clean);
+      return NextResponse.json({ cvData });
     }
-  ],
-  "formacao": [
-    {
-      "instituicao": "string",
-      "curso": "string",
-      "ano": "string"
-    }
-  ],
-  "habilidades": "string (liste de forma clara e profissional)"
-}
-`;
 
-    const message = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1500,
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const text = message.content[0].type === "text" ? message.content[0].text : "";
-
-    // Remove possíveis backticks do JSON
-    const clean = text.replace(/```json|```/g, "").trim();
-    const cvData = JSON.parse(clean);
+    // Sem chave da API — usa os dados como vieram (modo teste)
+    const cvData = {
+      nome: f.nome,
+      telefone: f.telefone,
+      email: f.email || "",
+      cidade: f.cidade || "",
+      objetivo: f.objetivo || `Profissional com experiência na área, buscando oportunidade de crescimento e desenvolvimento em empresa de destaque no mercado.`,
+      experiencias: (f.experiencias || []).filter((e: any) => e.empresa),
+      formacao: (f.formacao || []).filter((fm: any) => fm.curso),
+      habilidades: f.habilidades || "",
+    };
 
     return NextResponse.json({ cvData });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Erro ao gerar currículo:", error);
     return NextResponse.json({ error: "Erro ao gerar currículo" }, { status: 500 });
   }
