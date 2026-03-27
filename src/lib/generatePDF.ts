@@ -14,23 +14,23 @@ export function generatePDF(cv: CVData): void {
   const W = 210, H = 297;
 
   // ── HEADER ──────────────────────────────────────────────
-  doc.setFillColor(...tema.darkRgb);
+  doc.setFillColor(tema.darkRgb[0], tema.darkRgb[1], tema.darkRgb[2]);
   doc.rect(0, 0, W, 54, "F");
 
   // Faixa colorida topo
-  doc.setFillColor(...tema.rgb);
+  doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
   doc.rect(0, 0, W, 4, "F");
 
   // Foto
   if (cv.foto) {
     try {
       doc.addImage(cv.foto, "JPEG", W - 52, 8, 38, 40, undefined, "FAST");
-      doc.setDrawColor(...tema.rgb);
+      doc.setDrawColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
       doc.setLineWidth(1.5);
       doc.rect(W - 52, 8, 38, 40);
     } catch {}
   } else {
-    doc.setFillColor(...tema.rgb);
+    doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
     doc.rect(W - 52, 8, 38, 40, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(22);
@@ -64,7 +64,7 @@ export function generatePDF(cv: CVData): void {
   let cx = 14;
   cts.forEach((c, i) => {
     if (i > 0) {
-      doc.setTextColor(...tema.rgb);
+      doc.setTextColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
       doc.text("•", cx - 4, 49);
       doc.setTextColor(150, 150, 150);
     }
@@ -94,10 +94,10 @@ export function generatePDF(cv: CVData): void {
     yL = titulo(doc, "EXPERIÊNCIA PROFISSIONAL", xL, yL, tema, wL);
     exps.forEach((exp) => {
       // Bolinha timeline
-      doc.setFillColor(...tema.rgb);
+      doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
       doc.circle(xL + 1.5, yL, 2, "F");
       // Linha vertical
-      doc.setDrawColor(...tema.rgb);
+      doc.setDrawColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
       doc.setLineWidth(0.3);
       doc.line(xL + 1.5, yL + 2, xL + 1.5, yL + 20);
 
@@ -108,7 +108,7 @@ export function generatePDF(cv: CVData): void {
 
       doc.setFontSize(8);
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(...tema.rgb);
+      doc.setTextColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
       doc.text(exp.empresa || "", xL + 6, yL + 6);
 
       if (exp.periodo) {
@@ -146,7 +146,7 @@ export function generatePDF(cv: CVData): void {
       doc.setFillColor(225, 225, 225);
       doc.roundedRect(xR, yR + 1.5, wR, 2.5, 1, 1, "F");
       // Barra preenchida
-      doc.setFillColor(...tema.rgb);
+      doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
       doc.roundedRect(xR, yR + 1.5, wR * (pcts[i % pcts.length] / 100), 2.5, 1, 1, "F");
       yR += 10;
     });
@@ -158,7 +158,7 @@ export function generatePDF(cv: CVData): void {
   if (forms.length) {
     yR = titulo(doc, "FORMAÇÃO ACADÊMICA", xR, yR, tema, wR);
     forms.forEach(f => {
-      doc.setFillColor(...tema.rgb);
+      doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
       doc.rect(xR, yR - 1, 3, 3, "F");
 
       doc.setFontSize(9);
@@ -178,7 +178,7 @@ export function generatePDF(cv: CVData): void {
       if (f.ano) {
         doc.setFontSize(7.5);
         doc.setFont("helvetica", "bold");
-        doc.setTextColor(...tema.rgb);
+        doc.setTextColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
         doc.text(f.ano, xR + 6, yR);
         yR += 8;
       }
@@ -191,7 +191,7 @@ export function generatePDF(cv: CVData): void {
   doc.line(xR - 5, 60, xR - 5, Math.max(yL, yR) + 4);
 
   // ── RODAPÉ ───────────────────────────────────────────────
-  doc.setFillColor(...tema.rgb);
+  doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
   doc.rect(0, H - 8, W, 8, "F");
   doc.setFontSize(7);
   doc.setTextColor(255, 255, 255);
@@ -206,7 +206,7 @@ function titulo(doc: jsPDF, txt: string, x: number, y: number, tema: any, w: num
   doc.setFont("helvetica", "bold");
   doc.setTextColor(17, 17, 17);
   doc.text(txt, x, y);
-  doc.setFillColor(...tema.rgb);
+  doc.setFillColor(tema.rgb[0], tema.rgb[1], tema.rgb[2]);
   doc.rect(x, y + 1.5, 18, 1, "F");
   doc.setFillColor(220, 220, 220);
   doc.rect(x + 19, y + 1.5, w - 19, 0.5, "F");
