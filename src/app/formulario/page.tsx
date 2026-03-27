@@ -147,7 +147,7 @@ export default function Formulario() {
                 <Field label="WhatsApp / Telefone *" value={formData.telefone} onChange={(v) => setFormData({ ...formData, telefone: v })} placeholder="(11) 99999-9999" />
               </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+            <div style={{ display: "", TemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
               <Field label="E-mail" value={formData.email} onChange={(v) => setFormData({ ...formData, email: v })} placeholder="email@gmail.com" />
               <Field label="Cidade / Estado" value={formData.cidade} onChange={(v) => setFormData({ ...formData, cidade: v })} placeholder="São Paulo - SP" />
             </div>
@@ -202,7 +202,7 @@ export default function Formulario() {
                 <span style={{ fontSize: "20px", color: "#555", textDecoration: "line-through", fontWeight: 600 }}>R$ 29,90</span>
                 <span style={{ fontSize: "52px", fontWeight: 900, color: "#fff", letterSpacing: "-2px", lineHeight: 1 }}>R$ 5,00</span>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "28px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "28px" }}>
                 {["Pix", "Cartão"].map((m) => (
                   <div key={m} style={{ background: "rgba(255,255,255,0.06)", borderRadius: "4px", padding: "10px", fontSize: "12px", color: "#888", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>{m}</div>
                 ))}
