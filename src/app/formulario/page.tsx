@@ -392,7 +392,7 @@ export default function Formulario() {
               <span style={{ fontSize: "16px" }}>💾</span>
               <div>
                 <p style={{ margin: 0, fontSize: "13px", fontWeight: 700, color: "#166534" }}>Salvo automaticamente</p>
-                <p style={{ margin: 0, fontSize: "12px", color: "#4ade80", color: "#15803d" }}>Se fechar a página, seu currículo estará aqui quando voltar.</p>
+                <p style={{ margin: 0, fontSize: "12px", color: "#15803d" }}>Se fechar a página, seu currículo estará aqui quando voltar.</p>
               </div>
             </div>
             <SectionLabel>Dados Pessoais</SectionLabel>
