@@ -24,6 +24,9 @@ export default function Formulario() {
   const [cvData, setCvData] = useState<CVData | null>(null);
   const [sessionId, setSessionId] = useState("");
   const [checkoutUrl, setCheckoutUrl] = useState("");
+  const [semExperiencia, setSemExperiencia] = useState(false);
+  const [cropModal, setCropModal] = useState(false);
+  const [cropOffset, setCropOffset] = useState({ x: 50, y: 50 });
   const [error, setError] = useState("");
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -57,7 +60,7 @@ export default function Formulario() {
       const res = await fetch("/api/generate-cv", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: id }) });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      setCvData({ ...data.cvData, foto: formData.foto, estilo: formData.estilo });
+      setCvData({ ...data.cvData, foto: formData.foto, estilo: formData.estilo, fotoOffset: cropOffset });
       setStep("edit");
     } catch { setError("Erro ao gerar currículo. Entre em contato."); setStep("payment"); }
   };
@@ -71,7 +74,7 @@ export default function Formulario() {
       const res2 = await fetch("/api/generate-cv", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: data.sessionId }) });
       const data2 = await res2.json();
       if (data2.error) throw new Error(data2.error);
-      setCvData({ ...data2.cvData, foto: formData.foto, estilo: formData.estilo });
+      setCvData({ ...data2.cvData, foto: formData.foto, estilo: formData.estilo, fotoOffset: cropOffset });
       setStep("edit");
     } catch { setError("Erro no teste."); setStep("form"); }
   };
@@ -170,13 +173,18 @@ export default function Formulario() {
                 <p style={{ fontSize: "12px", fontWeight: 800, color: "#555", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "1px" }}>Foto (opcional)</p>
                 <label style={{ cursor: "pointer", display: "block" }}>
                   <div style={{ width: "80px", height: "80px", borderRadius: "50%", border: `2px dashed ${formData.foto ? RED : "#ccc"}`, overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: formData.foto ? "transparent" : "#fafafa" }}>
-                    {formData.foto ? <img src={formData.foto} alt="Foto" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : (
+                    {formData.foto ? <img src={formData.foto} alt="Foto" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: `${cropOffset.x}% ${cropOffset.y}%` }} /> : (
                       <div style={{ textAlign: "center" }}><div style={{ fontSize: "20px", marginBottom: "2px" }}>📷</div><div style={{ fontSize: "9px", color: "#aaa", fontWeight: 700, textTransform: "uppercase" }}>Enviar</div></div>
                     )}
                   </div>
                   <input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => { const file = e.target.files?.[0]; if (!file) return; const reader = new FileReader(); reader.onload = (ev) => setFormData({ ...formData, foto: ev.target?.result as string }); reader.readAsDataURL(file); }} />
                 </label>
-                {formData.foto && <button onClick={() => setFormData({ ...formData, foto: undefined })} style={{ marginTop: "6px", width: "80px", background: "transparent", border: "none", color: "#aaa", fontSize: "11px", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, textTransform: "uppercase" }}>Remover</button>}
+                {formData.foto && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginTop: "6px" }}>
+                    <button onClick={() => setFormData({ ...formData, foto: undefined })} style={{ width: "80px", background: "transparent", border: "none", color: "#aaa", fontSize: "10px", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, textTransform: "uppercase" }}>Remover</button>
+                    <button onClick={() => setCropModal(true)} style={{ width: "80px", background: "transparent", border: `1px solid ${RED}`, borderRadius: "4px", color: RED, fontSize: "10px", cursor: "pointer", fontFamily: "inherit", fontWeight: 700, textTransform: "uppercase", padding: "3px 0" }}>Ajustar</button>
+                  </div>
+                )}
               </div>
               <div className="foto-fields">
                 <Field label="Nome completo *" value={formData.nome} onChange={(v) => setFormData({ ...formData, nome: v })} placeholder="Ex: Maria Silva" />
@@ -190,31 +198,68 @@ export default function Formulario() {
             <FieldArea label="Objetivo profissional (opcional)" value={formData.objetivo} onChange={(v) => setFormData({ ...formData, objetivo: v })} placeholder="Ex: Busco vaga como auxiliar administrativo..." />
 
             <div style={{ height: "1.5px", background: "#e0dbd4", margin: "28px 0" }} />
-            <SectionLabel>Experiências Profissionais</SectionLabel>
-            {formData.experiencias.map((exp, i) => (
-              <div key={i} style={{ background: "#fff", border: "1.5px solid #e0dbd4", borderRadius: "4px", padding: "20px", marginBottom: "12px", borderLeft: `3px solid ${RED}` }}>
-                <p style={{ fontSize: "11px", fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "14px" }}>Experiência {i + 1}</p>
-                <div className="grid-2" style={{ marginBottom: "12px" }}>
-                  <Field label="Empresa" value={exp.empresa} onChange={(v) => { const e = [...formData.experiencias]; e[i].empresa = v; setFormData({ ...formData, experiencias: e }); }} placeholder="Nome da empresa" />
-                  <Field label="Cargo" value={exp.cargo} onChange={(v) => { const e = [...formData.experiencias]; e[i].cargo = v; setFormData({ ...formData, experiencias: e }); }} placeholder="Ex: Vendedor, Auxiliar..." />
-                </div>
-                <Field label="Período" value={exp.periodo} onChange={(v) => { const e = [...formData.experiencias]; e[i].periodo = v; setFormData({ ...formData, experiencias: e }); }} placeholder="Jan/2022 - Dez/2023" />
-                <FieldArea label="O que você fazia?" value={exp.descricao} onChange={(v) => { const e = [...formData.experiencias]; e[i].descricao = v; setFormData({ ...formData, experiencias: e }); }} placeholder="Descreva suas atividades..." />
-              </div>
-            ))}
-            <button className="btn-ghost" onClick={() => setFormData({ ...formData, experiencias: [...formData.experiencias, { empresa: "", cargo: "", periodo: "", descricao: "" }] })} style={{ marginBottom: "28px" }}>+ Adicionar experiência</button>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+              <SectionLabel style={{ margin: 0 }}>Experiências Profissionais</SectionLabel>
+              <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "13px", color: "#888", fontWeight: 600 }}>
+                <input type="checkbox" checked={semExperiencia} onChange={(e) => setSemExperiencia(e.target.checked)}
+                  style={{ width: "16px", height: "16px", accentColor: RED, cursor: "pointer" }} />
+                Sem experiência
+              </label>
+            </div>
+            {!semExperiencia && (
+              <>
+                {formData.experiencias.map((exp, i) => (
+                  <div key={i} style={{ background: "#fff", border: "1.5px solid #e0dbd4", borderRadius: "4px", padding: "20px", marginBottom: "12px", borderLeft: `3px solid ${RED}`, position: "relative" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
+                      <p style={{ fontSize: "11px", fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "1px", margin: 0 }}>Experiência {i + 1}</p>
+                      {formData.experiencias.length > 1 && (
+                        <button onClick={() => { const e = formData.experiencias.filter((_, idx) => idx !== i); setFormData({ ...formData, experiencias: e }); }}
+                          style={{ background: "transparent", border: "none", color: "#ccc", fontSize: "18px", cursor: "pointer", padding: "0 4px", lineHeight: 1, fontFamily: "inherit" }}>×</button>
+                      )}
+                    </div>
+                    <div className="grid-2" style={{ marginBottom: "12px" }}>
+                      <Field label="Empresa" value={exp.empresa} onChange={(v) => { const e = [...formData.experiencias]; e[i].empresa = v; setFormData({ ...formData, experiencias: e }); }} placeholder="Nome da empresa" />
+                      <Field label="Cargo" value={exp.cargo} onChange={(v) => { const e = [...formData.experiencias]; e[i].cargo = v; setFormData({ ...formData, experiencias: e }); }} placeholder="Ex: Vendedor, Auxiliar..." />
+                    </div>
+                    <Field label="Período" value={exp.periodo} onChange={(v) => { const e = [...formData.experiencias]; e[i].periodo = v; setFormData({ ...formData, experiencias: e }); }} placeholder="Jan/2022 - Dez/2023" />
+                    <FieldArea label="O que você fazia?" value={exp.descricao} onChange={(v) => { const e = [...formData.experiencias]; e[i].descricao = v; setFormData({ ...formData, experiencias: e }); }} placeholder="Descreva suas atividades..." />
+                  </div>
+                ))}
+                <button className="btn-ghost" onClick={() => setFormData({ ...formData, experiencias: [...formData.experiencias, { empresa: "", cargo: "", periodo: "", descricao: "" }] })} style={{ marginBottom: "28px" }}>+ Adicionar experiência</button>
+              </>
+            )}
 
             <div style={{ height: "1.5px", background: "#e0dbd4", margin: "0 0 28px" }} />
             <SectionLabel>Formação Escolar</SectionLabel>
             {formData.formacao.map((f, i) => (
               <div key={i} style={{ background: "#fff", border: "1.5px solid #e0dbd4", borderRadius: "4px", padding: "20px", marginBottom: "12px", borderLeft: `3px solid ${DARK}` }}>
-                <div className="grid-3">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                  <p style={{ fontSize: "11px", fontWeight: 800, color: "#aaa", textTransform: "uppercase", letterSpacing: "1px", margin: 0 }}>Formação {i + 1}</p>
+                  {formData.formacao.length > 1 && (
+                    <button onClick={() => { const fm = formData.formacao.filter((_, idx) => idx !== i); setFormData({ ...formData, formacao: fm }); }}
+                      style={{ background: "transparent", border: "none", color: "#ccc", fontSize: "18px", cursor: "pointer", padding: "0 4px", lineHeight: 1 }}>×</button>
+                  )}
+                </div>
+                {/* Grau selector */}
+                <div style={{ marginBottom: "12px" }}>
+                  <p style={{ fontSize: "12px", fontWeight: 800, color: "#555", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "1px" }}>Grau</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    {["Ensino Médio","Técnico","Superior Incompleto","Superior Completo","Pós-Graduação","MBA","Mestrado"].map((grau) => (
+                      <button key={grau} type="button"
+                        onClick={() => { const fm = [...formData.formacao]; fm[i].curso = grau; setFormData({ ...formData, formacao: fm }); }}
+                        style={{ padding: "6px 12px", border: `1.5px solid ${f.curso === grau ? RED : "#ddd"}`, borderRadius: "4px", background: f.curso === grau ? RED : "#fff", color: f.curso === grau ? "#fff" : "#888", fontSize: "11px", fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
+                        {grau}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid-2">
                   <Field label="Escola / Faculdade" value={f.instituicao} onChange={(v) => { const fm = [...formData.formacao]; fm[i].instituicao = v; setFormData({ ...formData, formacao: fm }); }} placeholder="Nome da instituição" />
-                  <Field label="Curso / Nível" value={f.curso} onChange={(v) => { const fm = [...formData.formacao]; fm[i].curso = v; setFormData({ ...formData, formacao: fm }); }} placeholder="Ensino Médio..." />
-                  <Field label="Ano" value={f.ano} onChange={(v) => { const fm = [...formData.formacao]; fm[i].ano = v; setFormData({ ...formData, formacao: fm }); }} placeholder="2020" />
+                  <Field label="Ano de conclusão" value={f.ano} onChange={(v) => { const fm = [...formData.formacao]; fm[i].ano = v; setFormData({ ...formData, formacao: fm }); }} placeholder="2024 (ou em andamento)" />
                 </div>
               </div>
             ))}
+            <button className="btn-ghost" onClick={() => setFormData({ ...formData, formacao: [...formData.formacao, { instituicao: "", curso: "", ano: "" }] })} style={{ marginBottom: "8px" }}>+ Adicionar formação</button>
 
             <div style={{ height: "1.5px", background: "#e0dbd4", margin: "16px 0 28px" }} />
             <SectionLabel>Habilidades</SectionLabel>
@@ -397,6 +442,30 @@ export default function Formulario() {
           </div>
         )}
       </div>
+
+      {/* CROP MODAL */}
+      {cropModal && formData.foto && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px" }}>
+          <div style={{ background: "#fff", borderRadius: "8px", padding: "24px", width: "100%", maxWidth: "360px" }}>
+            <h3 style={{ fontSize: "16px", fontWeight: 900, margin: "0 0 16px", color: DARK }}>Ajustar enquadramento</h3>
+            <div style={{ width: "120px", height: "120px", borderRadius: "50%", overflow: "hidden", margin: "0 auto 20px", border: `3px solid ${RED}` }}>
+              <img src={formData.foto} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: `${cropOffset.x}% ${cropOffset.y}%` }} />
+            </div>
+            <div style={{ marginBottom: "14px" }}>
+              <p style={{ fontSize: "11px", fontWeight: 800, color: "#555", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>Horizontal</p>
+              <input type="range" min="0" max="100" value={cropOffset.x} onChange={(e) => setCropOffset({ ...cropOffset, x: Number(e.target.value) })}
+                style={{ width: "100%", accentColor: RED }} />
+            </div>
+            <div style={{ marginBottom: "20px" }}>
+              <p style={{ fontSize: "11px", fontWeight: 800, color: "#555", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>Vertical</p>
+              <input type="range" min="0" max="100" value={cropOffset.y} onChange={(e) => setCropOffset({ ...cropOffset, y: Number(e.target.value) })}
+                style={{ width: "100%", accentColor: RED }} />
+            </div>
+            <button className="btn-main" onClick={() => setCropModal(false)}>Confirmar</button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
