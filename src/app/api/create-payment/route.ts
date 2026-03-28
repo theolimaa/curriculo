@@ -6,11 +6,9 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.json();
     const sessionId = randomUUID();
-    savePayment(sessionId, formData);
-
+    await savePayment(sessionId, formData);
     const baseUrl = process.env.KIWIFY_CHECKOUT_URL || "https://pay.kiwify.com.br/ozv3KzP";
     const checkoutUrl = `${baseUrl}?passthrough=${sessionId}`;
-
     return NextResponse.json({ sessionId, checkoutUrl });
   } catch (error) {
     console.error("Erro ao criar sessão:", error);
