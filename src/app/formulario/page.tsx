@@ -83,7 +83,9 @@ export default function Formulario() {
     const id = sid || sessionId;
     setStep("loading");
     try {
-      const res = await fetch("/api/generate-cv", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: id }) });
+      // Envia formData junto — servidor não precisa armazenar
+      const payload = { sessionId: id, formData };
+      const res = await fetch("/api/generate-cv", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       const cv = { ...data.cvData, foto: formData.foto, estilo: formData.estilo, fotoOffset: cropOffset };
