@@ -34,7 +34,8 @@ export default function Formulario() {
   useEffect(() => {
     if (step !== "payment" || !sessionId) return;
     pollingRef.current = setInterval(async () => {
-      const res = await fetch(`/api/check-payment?sessionId=${sessionId}`);
+      const email = encodeURIComponent(formData.email || "");
+      const res = await fetch(`/api/check-payment?email=${email}`);
       const data = await res.json();
       if (data.approved) { clearInterval(pollingRef.current!); handleGenerateCV(sessionId); }
     }, 5000);
@@ -84,7 +85,7 @@ export default function Formulario() {
     setStep("loading");
     try {
       // Envia formData junto — servidor não precisa armazenar
-      const payload = { sessionId: id, formData };
+      const payload = { email: formData.email, formData };
       const res = await fetch("/api/generate-cv", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
