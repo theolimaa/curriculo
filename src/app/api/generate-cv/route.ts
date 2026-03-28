@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isApproved } from "@/lib/storage";
+import { isApprovedByEmail } from "@/lib/storage";
 
 export async function POST(req: NextRequest) {
   try {
-    const { sessionId, formData: f } = await req.json();
+    const { email, formData: f } = await req.json();
 
-    if (!await isApproved(sessionId)) {
+    if (!await isApprovedByEmail(email)) {
       return NextResponse.json({ error: "Pagamento não confirmado" }, { status: 402 });
     }
     if (!f) return NextResponse.json({ error: "Dados não encontrados" }, { status: 400 });
@@ -14,11 +14,10 @@ export async function POST(req: NextRequest) {
       const Anthropic = (await import("@anthropic-ai/sdk")).default;
       const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
       const prompt = `Você é especialista em RH brasileiro. Melhore os dados abaixo para um currículo profissional.
-Retorne APENAS JSON válido, sem markdown, sem explicações.
-Dados: Nome: ${f.nome}, Tel: ${f.telefone}, Email: ${f.email || ""}, Cidade: ${f.cidade || ""}, Objetivo: ${f.objetivo || ""}
+Retorne APENAS JSON válido, sem markdown.
+Nome: ${f.nome}, Tel: ${f.telefone}, Email: ${f.email}, Cidade: ${f.cidade}, Objetivo: ${f.objetivo}
 Experiências: ${JSON.stringify(f.experiencias)}, Formação: ${JSON.stringify(f.formacao)}, Habilidades: ${JSON.stringify(f.habilidades)}
-Formato de retorno:
-{"nome":"","telefone":"","email":"","cidade":"","objetivo":"string profissional 2-3 linhas","experiencias":[{"empresa":"","cargo":"","periodo":"","descricao":""}],"formacao":[{"instituicao":"","curso":"","ano":""}],"habilidades":[{"nome":"","nivel":"basico|intermediario|avancado"}]}`;
+Formato: {"nome":"","telefone":"","email":"","cidade":"","objetivo":"2-3 linhas profissionais","experiencias":[{"empresa":"","cargo":"","periodo":"","descricao":""}],"formacao":[{"instituicao":"","curso":"","ano":""}],"habilidades":[{"nome":"","nivel":"basico|intermediario|avancado"}]}`;
       const message = await anthropic.messages.create({
         model: "claude-sonnet-4-20250514",
         max_tokens: 1500,
@@ -29,17 +28,16 @@ Formato de retorno:
       return NextResponse.json({ cvData });
     }
 
-    // Sem API — usa dados diretos
     const cvData = {
       nome: f.nome, telefone: f.telefone, email: f.email || "",
-      cidade: f.cidade || "", objetivo: f.objetivo || "Profissional buscando oportunidade de crescimento e desenvolvimento.",
+      cidade: f.cidade || "", objetivo: f.objetivo || "Profissional buscando oportunidade de crescimento.",
       experiencias: (f.experiencias || []).filter((e: any) => e.empresa),
       formacao: (f.formacao || []).filter((fm: any) => fm.curso || fm.grau),
       habilidades: Array.isArray(f.habilidades) ? f.habilidades.filter((h: any) => h.nome) : [],
     };
     return NextResponse.json({ cvData });
   } catch (error) {
-    console.error("Erro ao gerar currículo:", error);
-    return NextResponse.json({ error: "Erro ao gerar currículo" }, { status: 500 });
+    console.error("Erro:", error);
+    return NextResponse.json({ error: "Erro ao gerar" }, { status: 500 });
   }
 }
