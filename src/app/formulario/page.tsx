@@ -93,16 +93,6 @@ export default function Formulario() {
     } catch { setError("Erro ao gerar currículo. Entre em contato."); setStep("payment"); }
   };
 
-  const handleTestPayment = async () => {
-    setStep("loading");
-    try {
-      const res = await fetch("/api/test-payment", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      const res2 = await fetch("/api/generate-cv", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: data.sessionId }) });
-      const data2 = await res2.json();
-      if (data2.error) throw new Error(data2.error);
-      const cv2 = { ...data2.cvData, foto: formData.foto, estilo: formData.estilo, fotoOffset: cropOffset };
       setCvData(cv2);
       try { localStorage.setItem("curriculo_cv", JSON.stringify(cv2)); } catch {}
       setStep("edit");
@@ -123,7 +113,6 @@ export default function Formulario() {
 
   const stepLabels = ["Dados", "Pagamento", "Revisar", "Baixar"];
   const stepIndex = { form: 0, payment: 1, loading: 2, edit: 2, download: 3 }[step];
-  const isTestMode = process.env.NEXT_PUBLIC_TEST_MODE === "true";
 
   return (
     <div style={{ fontFamily: "'Barlow', sans-serif", minHeight: "100vh", background: CREAM, color: DARK }}>
@@ -365,9 +354,6 @@ export default function Formulario() {
             </div>
 
             <button className="btn-secondary" onClick={() => handleGenerateCV()}>Já paguei — verificar agora</button>
-            {isTestMode && (
-              <button className="btn-test" onClick={handleTestPayment}>Modo teste — gerar sem pagar</button>
-            )}
           </div>
         )}
 
