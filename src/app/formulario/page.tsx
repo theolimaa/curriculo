@@ -348,7 +348,6 @@ export default function Formulario() {
               <p style={{ fontSize: "12px", color: "#aaa" }}>Após pagar, essa página atualiza automaticamente.</p>
             </div>
 
-            <button className="btn-secondary" onClick={() => handleGenerateCV()}>Já paguei — verificar agora</button>
           </div>
         )}
 
