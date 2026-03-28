@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isApproved } from "@/lib/storage";
+import { isApprovedByEmail } from "@/lib/storage";
 
 export async function GET(req: NextRequest) {
-  const sessionId = req.nextUrl.searchParams.get("sessionId");
-  if (!sessionId) return NextResponse.json({ approved: false });
-  const approved = await isApproved(sessionId);
+  const email = req.nextUrl.searchParams.get("email");
+  if (!email) return NextResponse.json({ approved: false });
+  const approved = await isApprovedByEmail(email);
   return NextResponse.json({ approved });
 }
