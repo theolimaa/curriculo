@@ -44,6 +44,7 @@ export default function Formulario() {
 
   const handleSubmitForm = async () => {
     if (!formData.nome || !formData.telefone) { setError("Preencha seu nome e telefone!"); return; }
+    if (!formData.email) { setError("Preencha seu e-mail — ele será usado para liberar seu currículo após o pagamento."); return; }
     setError("");
     try {
       const res = await fetch("/api/create-payment", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
@@ -209,7 +210,7 @@ export default function Formulario() {
               </div>
             </div>
             <div className="grid-2">
-              <Field label="E-mail" value={formData.email} onChange={(v) => setFormData({ ...formData, email: v })} placeholder="email@gmail.com" />
+              <Field label="E-mail *" value={formData.email} onChange={(v) => setFormData({ ...formData, email: v })} placeholder="Use o mesmo email do pagamento" />
               <Field label="Cidade / Estado" value={formData.cidade} onChange={(v) => setFormData({ ...formData, cidade: v })} placeholder="São Paulo - SP" />
             </div>
             <FieldArea label="Objetivo profissional (opcional)" value={formData.objetivo} onChange={(v) => setFormData({ ...formData, objetivo: v })} placeholder="Ex: Busco vaga como auxiliar administrativo..." />
@@ -341,6 +342,10 @@ export default function Formulario() {
               </div>
               <a className="btn-kiwify" href={checkoutUrl} target="_blank" rel="noopener noreferrer">Pagar agora — R$ 5,00</a>
               <p style={{ color: "#555", fontSize: "12px", marginTop: "14px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Pagamento processado com segurança pela Kiwify</p>
+              <div style={{ marginTop: "12px", background: "rgba(255,255,255,0.06)", borderRadius: "4px", padding: "10px 14px", textAlign: "left" }}>
+                <p style={{ fontSize: "11px", color: "#f59e0b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "3px" }}>⚠ Importante</p>
+                <p style={{ fontSize: "11px", color: "#888", lineHeight: 1.5 }}>Use o e-mail <strong style={{ color: "#ccc" }}>{formData.email}</strong> no checkout para liberar seu currículo automaticamente.</p>
+              </div>
             </div>
 
             <div style={{ background: "#fff", border: "1.5px solid #e0dbd4", borderRadius: "4px", padding: "20px", textAlign: "center" }}>
