@@ -93,11 +93,6 @@ export default function Formulario() {
     } catch { setError("Erro ao gerar currículo. Entre em contato."); setStep("payment"); }
   };
 
-      setCvData(cv2);
-      try { localStorage.setItem("curriculo_cv", JSON.stringify(cv2)); } catch {}
-      setStep("edit");
-    } catch { setError("Erro no teste."); setStep("form"); }
-  };
 
   const updateExp = (i: number, field: string, val: string) => {
     if (!cvData) return;
