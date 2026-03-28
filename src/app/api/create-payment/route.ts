@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { savePayment } from "@/lib/storage";
 import { randomUUID } from "crypto";
 
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.json();
     const sessionId = randomUUID();
-    await savePayment(sessionId, formData);
+    // FormData fica no cliente — servidor não precisa armazenar
     const baseUrl = process.env.KIWIFY_CHECKOUT_URL || "https://pay.kiwify.com.br/ozv3KzP";
     const checkoutUrl = `${baseUrl}?passthrough=${sessionId}`;
     return NextResponse.json({ sessionId, checkoutUrl });
